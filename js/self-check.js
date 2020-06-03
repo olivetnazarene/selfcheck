@@ -1,6 +1,5 @@
 /* CONSTANTS */
-var baseURL = "https://api-na.hosted.exlibrisgroup.com/";
-var apiKey = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+var baseURL = "yourdomain";
 
 var libraryName = "XXXXX";
 var circDesk = "XXXXXXXXXXXXXXXX";
@@ -74,17 +73,17 @@ function login() {
     	$("#modalheader").text("loading data, please wait...");
         $("#myModal").show();
         $(".close").hide();
-        
+				
+				console.log(baseURL+"/users/"+loginid)
         $.ajax({
     		type: "GET",
-    		url: baseURL + "almaws/v1/users/" + $("#userid").val() + "?apikey=" + apiKey + "&expand=loans,requests,fees&format=json",
+    		url: baseURL+"/users/"+$("#userid").val(),
 			contentType: "text/plain",
 			dataType : "json",
-			crossDomain: true
-			
+			crossDomain: false
 		}).done(function(data) {
 			user = data;
-			
+			console.log(JSON.stringify(user));
 			// prepare scan box
 			$("#scanboxtitle").text("Welcome " + data.first_name + " " + data.last_name);
 			$("#userloans").text(data.loans.value);
@@ -92,7 +91,7 @@ function login() {
 			$("#userfees").text("$" + data.fees.value);
 			//$("#usernotes").text(data.user_note.length);
 			
-			 $("#loanstable").find("tr:gt(0)").remove();
+		  $("#loanstable").find("tr:gt(0)").remove();
 			
 			$("#loginbox").addClass("hide");
 			$("#scanbox").toggleClass("hide");
@@ -118,7 +117,7 @@ function loan() {
 	
 	var barcode = $("#barcode").val();
     if ((barcode != null) && (barcode != "")) {
-    	
+    	console.log($("#barcode").val());
     	$("#modalheader").text("processing request, please wait...");
         $("#myModal").show();
         $(".close").hide();
@@ -127,10 +126,13 @@ function loan() {
 
     	$.ajax({
     		type: "POST",
-    		url: baseURL + "almaws/v1/users/" + user.primary_id + "/loans?user_id_type=all_unique&item_barcode=" + $("#barcode").val() + "&apikey=" + apiKey,
-    		contentType: "application/xml",
-    		data: "<?xml version='1.0' encoding='UTF-8'?><item_loan><circ_desk>" + circDesk + "</circ_desk><library>" + libraryName + "</library></item_loan>",
-    		dataType: "xml"
+				url: baseURL + "/users/" + user.primary_id + "/loans?item_barcode=" + $("#barcode").val(),
+				contentType: "application/json",
+				dataType: "JSON",
+				data:`{"circ_desk":"${circDesk}", "library":"${libraryName}"}`
+    		// contentType: "application/xml",
+    		// data: "<?xml version='1.0' encoding='UTF-8'?><item_loan><circ_desk>" + circDesk + "</circ_desk><library>" + libraryName + "</library></item_loan>",
+    		// dataType: "xml"
     	}).done(function(data){
     		
     		var dueDate = new Date($(data).find("due_date").text());
@@ -143,7 +145,7 @@ function loan() {
     		console.log(jqxhr.responseText);
     		
     		$("#modalheader").text("");
-    		$("#modalheader").append("item not avaiable for loan.<br/><br/>please see the reference desk for more information<br/><br/><input class='modalclose' type='button' value='close' id='barcodeerrorbutton' onclick='javascript:returnToBarcode();'/>");
+    		$("#modalheader").append("item not available for loan.<br/><br/>please see the reference desk for more information<br/><br/><input class='modalclose' type='button' value='close' id='barcodeerrorbutton' onclick='javascript:returnToBarcode();'/>");
     		$("#barcodeerrorbutton").focus();
     		
     		$(".close").show();
