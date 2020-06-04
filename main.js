@@ -96,8 +96,12 @@ async function requestLoan(params, query, body, res){
   
   let loan = await api_request_load(params.userId, query.item_barcode, body)
   
-
-  if(loan){
+  if (loan.error){
+    res.writeHeader(400, {"Content-Type": "text/plain"})
+    res.write(`${loan.error[0].errorMessage}`)
+    res.end()
+  }
+  else if(loan){
     res.writeHeader(200, {"Content-Type": "text/xml"})
     res.write(loan)
     res.end()
@@ -136,13 +140,16 @@ function get_api_user(id){
 }
 
 function api_request_load(userid, barcode, library_info){
+  let library_xml = `<?xml version='1.0' encoding='UTF-8'?><item_loan><circ_desk>${library_info.circ_desk}</circ_desk><library>${library_info.library}</library></item_loan>`
   const options = {
     baseURL: hostname,
     port: 443,
     url: `/almaws/v1/users/${userid}/loans?user_id_type=all_unique&item_barcode=${barcode}`,
-    data: library_info,
+    data: library_xml,
     method: 'post',
-    headers: {Authorization: `apikey ${apiKey}`}
+    headers: {
+      'Content-Type': `application/xml`,
+      Authorization: `apikey ${apiKey}`}
   }
 
   const getData = async options => {
@@ -152,7 +159,17 @@ function api_request_load(userid, barcode, library_info){
 
       return data
     }catch(error){
-      console.log(error)
+      if(error.response){
+        console.log(error.response.data)
+        console.log(`ErrorList ${JSON.stringify(error.response.data.errorList)}`)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        return error.response.data.errorList
+      }else if (error.request){
+        console.log(error.request)
+      }else{
+        console.log(error.message)
+      }
     }
   }
 
