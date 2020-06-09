@@ -1,23 +1,18 @@
 /* CONSTANTS */
-var baseURL = "yourdomain";
-
-var libraryName = "XXXXX";
-var circDesk = "XXXXXXXXXXXXXXXX";
-
+const baseURL = "yourdomain";
 
 function initiate() {
 	getModalBox();
 	
 	$("#barcode").bind("keypress", function(e) {
-		var code = e.keyCode || e.which;
+		let code = e.keyCode || e.which;
 		if(code == 13) {
 			loan();
 		 }
 	});
 	
-
 	$("#userid").bind("keypress", function(e) {
-		var code = e.keyCode || e.which;
+		let code = e.keyCode || e.which;
 		if(code == 13) {
 			login();
 		 }
@@ -64,7 +59,7 @@ function returnToBarcode() {
 /* LOGIN */
 
 function login() {
-    var loginid = $("#userid").val();
+    let loginid = $("#userid").val();
     if ((loginid != null) && (loginid != "")) {
     	
     	$("#userid").prop("disabled", true);
@@ -115,28 +110,24 @@ function loaduser(data) {
 
 function loan() {
 	
-	var barcode = $("#barcode").val();
+	let barcode = $("#barcode").val();
     if ((barcode != null) && (barcode != "")) {
     	console.log($("#barcode").val());
     	$("#modalheader").text("processing request, please wait...");
-        $("#myModal").show();
-        $(".close").hide();
-
-		$("#barcode").prop("disabled", true);
+      $("#myModal").show();
+      $(".close").hide();
+			$("#barcode").prop("disabled", true);
 
     	$.ajax({
     		type: "POST",
 				url: baseURL + "/users/" + user.primary_id + "/loans?item_barcode=" + $("#barcode").val(),
 				contentType: "application/json",
 				dataType: "JSON",
-				data:`{"circ_desk":"${circDesk}", "library":"${libraryName}"}`
-    		// contentType: "application/xml",
-    		// data: "<?xml version='1.0' encoding='UTF-8'?><item_loan><circ_desk>" + circDesk + "</circ_desk><library>" + libraryName + "</library></item_loan>",
-    		// dataType: "xml"
+				data:``
     	}).done(function(data){
     		
-    		var dueDate = new Date($(data).find("due_date").text());
-    		var dueDateText = (parseInt(dueDate.getMonth()) + 1) + "/" + dueDate.getDate() + "/" + dueDate.getFullYear();
+    		let dueDate = new Date($(data).find("due_date").text());
+    		let dueDateText = (parseInt(dueDate.getMonth()) + 1) + "/" + dueDate.getDate() + "/" + dueDate.getFullYear();
     		$("#loanstable").append("<tr><td>" + $(data).find("title").text() + "</td><td>" + dueDateText + "</td></tr>");
     		
     		returnToBarcode();
