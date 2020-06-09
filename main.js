@@ -2,7 +2,6 @@
 // Dependencies
 // 
 const express = require('express')
-// const https = require('https')
 const axios = require('axios')
 const fs = require('fs')
 const bodyParser = require('body-parser')
@@ -94,7 +93,7 @@ async function getUser(params, res){
 async function requestLoan(params, query, body, res){
   console.log(`Loan processing started ${JSON.stringify(params)} and ${JSON.stringify(query)} and ${JSON.stringify(body)}`)
   
-  let loan = await api_request_load(params.userId, query.item_barcode, body)
+  let loan = await api_request_loan(params.userId, query.item_barcode)
   
   if (loan.error){
     res.writeHeader(400, {"Content-Type": "text/plain"})
@@ -139,8 +138,8 @@ function get_api_user(id){
   return getData(options)
 }
 
-function api_request_load(userid, barcode, library_info){
-  let library_xml = `<?xml version='1.0' encoding='UTF-8'?><item_loan><circ_desk>${library_info.circ_desk}</circ_desk><library>${library_info.library}</library></item_loan>`
+function api_request_loan(userid, barcode){
+  let library_xml = `<?xml version='1.0' encoding='UTF-8'?><item_loan><circ_desk>${circDesk}</circ_desk><library>${libraryName}</library></item_loan>`
   const options = {
     baseURL: hostname,
     port: 443,
