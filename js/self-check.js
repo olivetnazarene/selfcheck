@@ -125,10 +125,9 @@ function loan() {
 				dataType: "JSON",
 				data:``
     	}).done(function(data){
-    		
-    		let dueDate = new Date($(data).find("due_date").text());
+    		let dueDate = new Date(data.due_date);
     		let dueDateText = (parseInt(dueDate.getMonth()) + 1) + "/" + dueDate.getDate() + "/" + dueDate.getFullYear();
-    		$("#loanstable").append("<tr><td>" + $(data).find("title").text() + "</td><td>" + dueDateText + "</td></tr>");
+    		$("#loanstable").append("<tr><td>" + data.title + "</td><td>" + dueDateText + "</td></tr>");
     		
     		returnToBarcode();
     		

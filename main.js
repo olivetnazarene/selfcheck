@@ -101,8 +101,8 @@ async function requestLoan(params, query, body, res){
     res.end()
   }
   else if(loan){
-    res.writeHeader(200, {"Content-Type": "text/xml"})
-    res.write(loan)
+    res.writeHeader(200, {"Content-Type": "text/json"})
+    res.write(JSON.stringify(loan))
     res.end()
   }else{
     res.writeHeader(400, {"Content-Type": "text/plain"})
@@ -166,8 +166,10 @@ function api_request_loan(userid, barcode){
         return error.response.data.errorList
       }else if (error.request){
         console.log(error.request)
+        return error.request
       }else{
         console.log(error.message)
+        return error.message
       }
     }
   }
