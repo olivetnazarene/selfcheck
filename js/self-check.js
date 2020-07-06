@@ -67,7 +67,7 @@ function login() {
     	$("#userid").prop("disabled", true);
     	$("#loginerror").addClass("hide");
     	
-    	$("#modalheader").text("loading data, please wait...");
+    	$("#modalheader").text("Loading data, please wait...");
         $("#myModal").show();
         $(".close").hide();
 				
@@ -100,7 +100,8 @@ function login() {
 
 			
 		}).fail(function(jqxhr, textStatus, error) {
-		    $("#loginerror").toggleClass("hide");
+				$("#loginerror").toggleClass("hide");
+				$("#userid").val(""); //Clear userid for touchless retry
 		    console.log(jqxhr.responseText);
 		    
 		}).always(function() {
@@ -125,7 +126,7 @@ function loan() {
 				return 
 			}
     	console.log($("#barcode").val());
-    	$("#modalheader").text("processing request, please wait...");
+    	$("#modalheader").text("Processing request, please wait...");
       $("#myModal").show();
       $(".close").hide();
 			$("#barcode").prop("disabled", true);
