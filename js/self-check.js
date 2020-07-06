@@ -22,7 +22,7 @@ function initiate() {
 var modal;
 var span;
 var user;
-var timer;
+var sessiontimer;
 var defaultTimeout = 60
 
 function getModalBox() {
@@ -88,7 +88,7 @@ function login() {
 			$("#userfees").text("$" + data.fees.value);
 			let timeoutspan = document.querySelector("#usertimeout");
 			// console.log(timeoutspan)
-			startTimeout(defaultTimeout, timeoutspan);
+			sessionTimeout(defaultTimeout, timeoutspan);
 			//$("#usernotes").text(data.user_note.length);
 			
 		  $("#loanstable").find("tr:gt(0)").remove();
@@ -147,13 +147,13 @@ function loan() {
     		console.log(jqxhr.responseText);
     		
     		$("#modalheader").text("");
-    		$("#modalheader").append("item not available for loan.<br/><br/>please see the circulation desk for more information<br/><br/><input class='modalclose' type='button' value='close' id='barcodeerrorbutton' onclick='javascript:returnToBarcode();'/>");
+    		$("#modalheader").append("Item not available for loan.<br/><br/>Please see the circulation desk for more information.<br/><br/><input class='modalclose' type='button' value='close [6]' id='barcodeerrorbutton' onclick='javascript:returnToBarcode();'/>");
     		$("#barcodeerrorbutton").focus();
     		
     		$(".close").show();
-
+				
     		$("#barcode").val("");
-
+				modalTimeout();
     	}).always(function() {
     		extendTimeout();
     	});
@@ -161,33 +161,64 @@ function loan() {
     }
 } 
 
-function startTimeout(duration, display){
-	timer = duration;
+function modalTimeout(){
+	let timer = 5
 	let timeout = setInterval(function(){
-		let minutes = parseInt(timer / 60, 10)
 		let seconds = parseInt(timer % 60, 10)
+		$("#barcodeerrorbutton").val(`close [${timer}]`)
 
-		minutes = minutes < 10 ? "0" + minutes : minutes 
-		seconds = seconds < 10 ? "0" + seconds : seconds 
-		
-		display.textContent = minutes + ":" + seconds
-		if (--timer < 0){
-			// timer = duration;
-			logout();
+		if(--timer < 0){
+			// $(".close").hide()
+			$("#myModal").hide();
+			returnToBarcode();
 			clearInterval(timeout);
 		}
 	}, 1000)
 }
+
+function sessionTimeout(duration, display){
+	sessiontimer = duration;
+	let timeout = setInterval(function(){
+		let minutes = parseInt(sessiontimer / 60, 10)
+		let seconds = parseInt(sessiontimer % 60, 10)
+
+		minutes = minutes < 10 ? "0" + minutes : minutes 
+		seconds = seconds < 10 ? "0" + seconds : seconds 
+		
+		if(sessiontimer == null){
+			clearInterval(timeout)
+		}
+
+		if (sessiontimer != null && --sessiontimer < 0){
+			// sessiontimer = duration;
+			console.log("sessiontimer is below zero, calling logout and clearInterval");
+			logout();
+			clearInterval(timeout);
+		}
+		
+		if (sessiontimer >= 0){
+			// console.log(sessiontimer)
+			display.textContent = minutes + ":" + seconds;
+		}
+		
+	}, 1000)
+}
 function extendTimeout(){
-	timer = defaultTimeout
+	sessiontimer = defaultTimeout
 }
 
 function logout() {
+	sessiontimer = null;
+	user = {};
+	$("#scanboxtitle").text("");
+	$("#userloans").text("");
+	$("#userrequests").text("");
+	$("#userfees").text("");
 	$("#userid").val("");
 	$("#loginbox").toggleClass("hide");
 	$("#scanbox").toggleClass("hide");
 	$("#userid").focus();
-	user = {};
+	$("#barcode").val("");
 }
 
 $( document ).ready(function() {
