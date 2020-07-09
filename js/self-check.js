@@ -1,24 +1,18 @@
 /* CONSTANTS */
-var baseURL = "https://api-na.hosted.exlibrisgroup.com/";
-var apiKey = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
-
-var libraryName = "XXXXX";
-var circDesk = "XXXXXXXXXXXXXXXX";
-
+const baseURL = "yourdomain";
 
 function initiate() {
 	getModalBox();
 	
 	$("#barcode").bind("keypress", function(e) {
-		var code = e.keyCode || e.which;
+		let code = e.keyCode || e.which;
 		if(code == 13) {
 			loan();
 		 }
 	});
 	
-
 	$("#userid").bind("keypress", function(e) {
-		var code = e.keyCode || e.which;
+		let code = e.keyCode || e.which;
 		if(code == 13) {
 			login();
 		 }
@@ -28,6 +22,8 @@ function initiate() {
 var modal;
 var span;
 var user;
+var sessiontimer;
+var defaultTimeout = 60
 
 function getModalBox() {
 	
@@ -65,42 +61,47 @@ function returnToBarcode() {
 /* LOGIN */
 
 function login() {
-    var loginid = $("#userid").val();
+    let loginid = $("#userid").val();
     if ((loginid != null) && (loginid != "")) {
     	
     	$("#userid").prop("disabled", true);
     	$("#loginerror").addClass("hide");
     	
-    	$("#modalheader").text("loading data, please wait...");
+    	$("#modalheader").text("Loading data, please wait...");
         $("#myModal").show();
         $(".close").hide();
-        
+				
+				// console.log(baseURL+"/users/"+loginid)
         $.ajax({
     		type: "GET",
-    		url: baseURL + "almaws/v1/users/" + $("#userid").val() + "?apikey=" + apiKey + "&expand=loans,requests,fees&format=json",
+    		url: baseURL+"/users/"+$("#userid").val(),
 			contentType: "text/plain",
 			dataType : "json",
-			crossDomain: true
-			
+			crossDomain: false
 		}).done(function(data) {
 			user = data;
-			
+			// console.log(JSON.stringify(user));
 			// prepare scan box
 			$("#scanboxtitle").text("Welcome " + data.first_name + " " + data.last_name);
 			$("#userloans").text(data.loans.value);
 			$("#userrequests").text(data.requests.value);
 			$("#userfees").text("$" + data.fees.value);
+			let timeoutspan = document.querySelector("#usertimeout");
+			// console.log(timeoutspan)
+			sessionTimeout(defaultTimeout, timeoutspan);
 			//$("#usernotes").text(data.user_note.length);
 			
-			 $("#loanstable").find("tr:gt(0)").remove();
+		  $("#loanstable").find("tr:gt(0)").remove();
 			
 			$("#loginbox").addClass("hide");
 			$("#scanbox").toggleClass("hide");
 			
 			$("#barcode").focus();
+
 			
 		}).fail(function(jqxhr, textStatus, error) {
-		    $("#loginerror").toggleClass("hide");
+				$("#loginerror").toggleClass("hide");
+				$("#userid").val(""); //Clear userid for touchless retry
 		    console.log(jqxhr.responseText);
 		    
 		}).always(function() {
@@ -116,26 +117,30 @@ function loaduser(data) {
 
 function loan() {
 	
-	var barcode = $("#barcode").val();
-    if ((barcode != null) && (barcode != "")) {
-    	
-    	$("#modalheader").text("processing request, please wait...");
-        $("#myModal").show();
-        $(".close").hide();
+	let barcode = $("#barcode").val();
 
-		$("#barcode").prop("disabled", true);
+    if ((barcode != null) && (barcode != "")) {
+			if (barcode == user.user_identifier[0].value || barcode == user.primary_id){
+				console.log("Re-scanned userid, logging out")
+				logout();
+				return 
+			}
+    	console.log($("#barcode").val());
+    	$("#modalheader").text("Processing request, please wait...");
+      $("#myModal").show();
+      $(".close").hide();
+			$("#barcode").prop("disabled", true);
 
     	$.ajax({
     		type: "POST",
-    		url: baseURL + "almaws/v1/users/" + user.primary_id + "/loans?user_id_type=all_unique&item_barcode=" + $("#barcode").val() + "&apikey=" + apiKey,
-    		contentType: "application/xml",
-    		data: "<?xml version='1.0' encoding='UTF-8'?><item_loan><circ_desk>" + circDesk + "</circ_desk><library>" + libraryName + "</library></item_loan>",
-    		dataType: "xml"
+				url: baseURL + "/users/" + user.primary_id + "/loans?item_barcode=" + $("#barcode").val(),
+				contentType: "application/json",
+				dataType: "JSON",
+				data:``
     	}).done(function(data){
-    		
-    		var dueDate = new Date($(data).find("due_date").text());
-    		var dueDateText = (parseInt(dueDate.getMonth()) + 1) + "/" + dueDate.getDate() + "/" + dueDate.getFullYear();
-    		$("#loanstable").append("<tr><td>" + $(data).find("title").text() + "</td><td>" + dueDateText + "</td></tr>");
+    		let dueDate = new Date(data.due_date);
+    		let dueDateText = (parseInt(dueDate.getMonth()) + 1) + "/" + dueDate.getDate() + "/" + dueDate.getFullYear();
+    		$("#loanstable").append("<tr><td>" + data.title + "</td><td>" + dueDateText + "</td></tr>");
     		
     		returnToBarcode();
     		
@@ -143,25 +148,78 @@ function loan() {
     		console.log(jqxhr.responseText);
     		
     		$("#modalheader").text("");
-    		$("#modalheader").append("item not avaiable for loan.<br/><br/>please see the reference desk for more information<br/><br/><input class='modalclose' type='button' value='close' id='barcodeerrorbutton' onclick='javascript:returnToBarcode();'/>");
+    		$("#modalheader").append("Item not available for loan.<br/><br/>Please see the circulation desk for more information.<br/><br/><input class='modalclose' type='button' value='close [6]' id='barcodeerrorbutton' onclick='javascript:returnToBarcode();'/>");
     		$("#barcodeerrorbutton").focus();
     		
     		$(".close").show();
-
+				
     		$("#barcode").val("");
-
+				modalTimeout();
     	}).always(function() {
-    		
+    		extendTimeout();
     	});
     	
     }
 } 
 
+function modalTimeout(){
+	let timer = 5
+	let timeout = setInterval(function(){
+		let seconds = parseInt(timer % 60, 10)
+		$("#barcodeerrorbutton").val(`close [${timer}]`)
+
+		if(--timer < 0){
+			// $(".close").hide()
+			$("#myModal").hide();
+			returnToBarcode();
+			clearInterval(timeout);
+		}
+	}, 1000)
+}
+
+function sessionTimeout(duration, display){
+	sessiontimer = duration;
+	let timeout = setInterval(function(){
+		let minutes = parseInt(sessiontimer / 60, 10)
+		let seconds = parseInt(sessiontimer % 60, 10)
+
+		minutes = minutes < 10 ? "0" + minutes : minutes 
+		seconds = seconds < 10 ? "0" + seconds : seconds 
+		
+		if(sessiontimer == null){
+			clearInterval(timeout)
+		}
+
+		if (sessiontimer != null && --sessiontimer < 0){
+			// sessiontimer = duration;
+			console.log("sessiontimer is below zero, calling logout and clearInterval");
+			logout();
+			clearInterval(timeout);
+		}
+		
+		if (sessiontimer >= 0){
+			// console.log(sessiontimer)
+			display.textContent = minutes + ":" + seconds;
+		}
+		
+	}, 1000)
+}
+function extendTimeout(){
+	sessiontimer = defaultTimeout
+}
+
 function logout() {
+	sessiontimer = null;
+	user = {};
+	$("#scanboxtitle").text("");
+	$("#userloans").text("");
+	$("#userrequests").text("");
+	$("#userfees").text("");
 	$("#userid").val("");
 	$("#loginbox").toggleClass("hide");
 	$("#scanbox").toggleClass("hide");
 	$("#userid").focus();
+	$("#barcode").val("");
 }
 
 $( document ).ready(function() {

@@ -1,0 +1,27 @@
+{
+  "name": "selfcheck",
+  "version": "1.0.0",
+  "description": "Alma Self-Checkout tool that doesn't use CORS",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wc-library/selfcheck.git"
+  },
+  "keywords": [
+    "alma"
+  ],
+  "author": "Jeffrey Mudge jeffrey.mudge@wheaton.edu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wc-library/selfcheck/issues"
+  },
+  "homepage": "https://github.com/wc-library/selfcheck#readme",
+  "dependencies": {
+    "@types/jquery": "^3.3.38",
+    "axios": "^0.19.2",
+    "express": "^4.17.1"
+  }
+}
