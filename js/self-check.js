@@ -1,5 +1,8 @@
 /* CONSTANTS */
-const baseURL = "yourdomain";
+const protocol = window.location.protocol + "//";
+const hostname = window.location.hostname;
+const port = window.location.port;
+const baseURL = port ? (protocol + hostname + ":"+ port) : (protocol + hostname);	
 
 function initiate() {
 	getModalBox();
