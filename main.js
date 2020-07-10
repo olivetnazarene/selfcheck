@@ -15,7 +15,7 @@ const port = process.env.NODE_PORT || 3000;
 // 
 // Setup API settings
 // 
-require('./config')
+const config = require('./config');
 // 
 // Routes
 // 
@@ -37,8 +37,13 @@ app.listen(port, () => console.log(`Selfcheck has started listening at ${port}`)
 // Route handler functions
 // 
 function index(req, res){
-  console.log(`Loading index page with request ${req}`)
-  let html = fs.readFileSync('self-check.html');
+  let html;
+  console.log(`Loading index page with request ${req} and touchfree set to ${config.touchfree}`)
+  if (config.touchfree){
+    html = fs.readFileSync('self-check-touchfree.html');  
+  }else{
+    html = fs.readFileSync('self-check-keyboard.html');
+  }
   res.writeHeader(200, {"Content-Type": "text/html"});
   res.write(html)
   res.end()
@@ -114,11 +119,11 @@ async function requestLoan(params, query, body, res){
 // 
 function get_api_user(id){
   const options = {
-    baseURL: hostname,
+    baseURL: config.hostname,
     port: 443,
     url: '/almaws/v1/users/'+id+'?expand=loans,requests,fees&format=json',
     method: 'get',
-    headers: {Authorization: `apikey ${apiKey}` }
+    headers: {Authorization: `apikey ${config.apiKey}` }
   }
 
   // console.log(JSON.stringify(options))
@@ -137,16 +142,16 @@ function get_api_user(id){
 }
 
 function api_request_loan(userid, barcode){
-  let library_xml = `<?xml version='1.0' encoding='UTF-8'?><item_loan><circ_desk>${circDesk}</circ_desk><library>${libraryName}</library></item_loan>`
+  let library_xml = `<?xml version='1.0' encoding='UTF-8'?><item_loan><circ_desk>${config.circDesk}</circ_desk><library>${config.libraryName}</library></item_loan>`
   const options = {
-    baseURL: hostname,
+    baseURL: config.hostname,
     port: 443,
     url: `/almaws/v1/users/${userid}/loans?user_id_type=all_unique&item_barcode=${barcode}`,
     data: library_xml,
     method: 'post',
     headers: {
       'Content-Type': `application/xml`,
-      Authorization: `apikey ${apiKey}`}
+      Authorization: `apikey ${config.apiKey}`}
   }
 
   const getData = async options => {
