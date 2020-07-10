@@ -2,10 +2,16 @@
 
 Alma Self-Check Application
 
-## Under Development
+## About
 
-This project is under development. It's meant to be a quick project to see if we can take the existing js client and use it with a node.js api proxy server. This should avoid the need to have a CORS exception and having the API key in the client's web browser.
+This web app utilizes the Alma API to power a self checkout station. 
+
+This version supports touch free interactions by utilizing a barcode scanner on a stand for all user input.
 
 ## Install
 
-To install it, set the constants in the `main.js` and `js/self-check.js` files and run `npm install` in the project root on a server that has node and npm installed.
+1. Run `git clone https://github.com/wc-library` to clone the repository to your machine.
+2. Run `npm install` in the cloned directory.
+3. Copy `example_config.js` to `config.js` and update the values to match.
+4. Set your node env port if you don't want it to run on 3000 (recommended)
+5. If you want, set up an Apache reverse proxy, and limit to the IP address(es) of your kiosk(s).
