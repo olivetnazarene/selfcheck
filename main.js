@@ -5,19 +5,17 @@ const express = require('express')
 const axios = require('axios')
 const fs = require('fs')
 const bodyParser = require('body-parser')
+
 // 
 // Setup server values
 // 
 const app = express()
 const jsonParser = bodyParser.json()
-const port = 3000
+const port = process.env.NODE_PORT || 3000;
 // 
 // Setup API settings
 // 
-const hostname = 'https://api-na.hosted.exlibrisgroup.com'
-const apiKey = 'xxxxxxxxxxxxxxxxxxxx'
-const libraryName = "XXXXX";
-const circDesk = "XXXXXXXXXXXXXXXX";
+require('./config')
 // 
 // Routes
 // 
