@@ -22,6 +22,7 @@ const config = require('./config');
 app.get('/', (req, res) => index(req, res))
 app.get('/css/self-check.css', (req, res)=> css(res))
 app.get('/js/self-check.js', (req, res)=> js(res))
+app.get('/images/logo.png', (req, res)=> img(res))
 app.get('/users/:userId', (req, res ) => {
   console.log("user id scan");
   getUser(req.params, res);
@@ -68,6 +69,19 @@ function js(res){
   if(js){
     res.writeHeader(200, {"Content-Type": "text/javascript"});
     res.write(js)
+    res.end()
+    return res
+  }else{
+    res.writeHeader(400, {"Msg": "something went wrong"})
+    res.end()
+  }
+}
+
+function img(res){
+  let img = fs.readFileSync('images/logo.png');
+  if(img){
+    res.writeHeader(200, {"Content-Type": "image/png"})
+    res.write(img)
     res.end()
     return res
   }else{
