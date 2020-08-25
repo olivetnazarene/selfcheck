@@ -109,7 +109,8 @@ function login() {
 		    
 		}).always(function() {
 			$("#userid").prop("disabled", false);
-		    $("#myModal").hide();
+			$("#myModal").hide();
+			focusLogin();
 		});
     }
 }
@@ -226,5 +227,11 @@ function logout() {
 }
 
 $( document ).ready(function() {
-	  $( "#userid" ).focus();
+	  focusLogin();
 	});
+
+function focusLogin(){
+	$(document).ready(function(){
+	$( "#userid" ).focus();
+	})
+}
