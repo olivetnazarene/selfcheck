@@ -104,13 +104,13 @@ function login() {
 			
 		}).fail(function(jqxhr, textStatus, error) {
 				$("#loginerror").toggleClass("hide");
-				$("#userid").val(""); //Clear userid for touchless retry
-		    console.log(jqxhr.responseText);
+				// $("#userid").val(""); //Clear userid for touchless retry
+				console.log(jqxhr.responseText);
+				setTimeout(location.reload.bind(location), 2000);
 		    
 		}).always(function() {
 			$("#userid").prop("disabled", false);
 			$("#myModal").hide();
-			focusLogin();
 		});
     }
 }
@@ -227,11 +227,5 @@ function logout() {
 }
 
 $( document ).ready(function() {
-	  focusLogin();
+		$( "#userid" ).focus();
 	});
-
-function focusLogin(){
-	$(document).ready(function(){
-	$( "#userid" ).focus();
-	})
-}
