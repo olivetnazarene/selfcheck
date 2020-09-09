@@ -11,7 +11,7 @@ const configure_for_touch = () => {
 	$("#iteminstruction").text("Please scan your next item:")
 }
 
-function async initiate() {
+async function initiate() {
 	getModalBox();
 	
 	$("#barcode").bind("keypress", function(e) {
