@@ -41,13 +41,9 @@ async function getUser(params, res){
   let u = await get_api_user(params.userId)
 
   if(u){
-    res.writeHeader(200, {"Content-Type": "text/json"})
-    res.write(`${JSON.stringify(u)}`)
-    res.end()
+	  res.json(u)
   }else{
-    res.writeHeader(400, {"Content-Type": "text/plain"})
-    res.write('something went wrong with the lookup')
-    res.end()
+    res.send('something went wrong with the lookup')
   }
 }
 
@@ -57,18 +53,12 @@ async function requestLoan(params, query, body, res){
   let loan = await api_request_loan(params.userId, query.item_barcode)
   
   if (loan.error){
-    res.writeHeader(400, {"Content-Type": "text/plain"})
-    res.write(`${loan.error[0].errorMessage}`)
-    res.end()
+    res.send(`${loan.error[0].errorMessage}`)
   }
   else if(loan){
-    res.writeHeader(200, {"Content-Type": "text/json"})
-    res.write(JSON.stringify(loan))
-    res.end()
+    res.json(loan)
   }else{
-    res.writeHeader(400, {"Content-Type": "text/plain"})
-    res.write('something went wrong with the lookup')
-    res.end()
+	  res.send('something went wrong with the lookup')
   }
 
 }
