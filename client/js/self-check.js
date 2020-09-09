@@ -4,32 +4,40 @@ const hostname = window.location.hostname;
 const port = window.location.port;
 const baseURL = port ? (protocol + hostname + ":" + port) : (protocol + hostname);
 
+// This is some kind of clever black magic that makes "document" work in functions
+const $ = query => document.querySelector(query)
+
+const hide = (el) => {
+	el.classList.add("hide")
+}
+const show = (el) => {
+	el.classList.remove("hide")
+}
+
 let TOUCH = false
 const configure_for_touch = () => {
-	$("#idinstruction").text("Please scan your ID:")
+	$("#idinstruction").textContent = "Please scan your ID:"
 	$("#submit").remove()
-	$("#logoutinstruction").text("Scan your ID again to logout")
-	$("#iteminstruction").text("Please scan your next item:")
+	$("#logoutinstruction").textContent = "Scan your ID again to logout"
+	$("#iteminstruction").textContent = "Please scan your next item:"
 }
 
 async function initiate() {
 	getModalBox();
 
-	$("#barcode").bind("keypress", function (e) {
-		let code = e.keyCode || e.which;
-		if (code == 13) {
-			loan();
+	$("#barcode").onkeyup = (e) => {
+		if (e.key === "Enter") { // e.code = e.key = "Enter" == e.which = 13
+			loan()
 		}
-	});
+	}
 
-	$("#userid").bind("keypress", function (e) {
-		let code = e.keyCode || e.which;
-		if (code == 13) {
-			login();
+	$("#userid").onkeyup = (e) => {
+		if (e.key === "Enter") { // e.code = e.key = "Enter" == e.which = 13
+			login()
 		}
-	});
+	}
 
-	const istouch = await fetch("//is-touch")
+	const istouch = await fetch("/is-touch").then(r => r.json())
 	if ("touch" in istouch) {
 		TOUCH = istouch.touch
 		configure_for_touch()
@@ -45,89 +53,67 @@ var sessiontimer;
 var defaultTimeout = 60
 
 function getModalBox() {
-
-	// Get the modal
-	modal = document.getElementById('myModal');
-	$("#myModal").hide();
-
-	// Get the <span> element that closes the modal
-	span = document.getElementsByClassName("close")[0];
+	hide($("#myModal"))
 
 	// When the user clicks on <span> (x), close the modal
-	span.onclick = function () {
-		$("#myModal").hide();
+	$("#modalclosex").onclick = () => {
+		hide($("#myModal"))
 	}
-
-	// When the user clicks anywhere outside of the modal, close it
-	/*
-	window.onclick = function(event) {
-		if (event.target == modal) {
-			$("#myModal").hide();
-		}
-	}
-	*/
 }
 
 function returnToBarcode() {
-	$("#barcode").prop("disabled", false);
-	$("#myModal").hide();
+	$("#barcode").disabled = false;
+	hide($("#myModal"))
 
-	$("#barcode").val("");
-	$("#barcode").focus();
+	$("#barcode").value = ""
+	$("#barcode").focus()
 }
 
 
 /* LOGIN */
 
 function login() {
-	let loginid = $("#userid").val();
+	let loginid = $("#userid").value
 	if ((loginid != null) && (loginid != "")) {
 
-		$("#userid").prop("disabled", true);
-		$("#loginerror").addClass("hide");
+		$("#userid").disabled = true
+		hide($("#loginerror"))
 
-		$("#modalheader").text("Loading data, please wait...");
-		$("#myModal").show();
-		$(".close").hide();
+		$("#modalheader").textContent = "Loading data, please wait..."
+		show($("#myModal"))
+		hide($("#modalclosex"))
 
 		// console.log(baseURL+"/users/"+loginid)
-		$.ajax({
-			type: "GET",
-			url: baseURL + "/users/" + $("#userid").val(),
-			contentType: "text/plain",
-			dataType: "json",
-			crossDomain: false
-		}).done(function (data) {
-			user = data;
-			// console.log(JSON.stringify(user));
-			// prepare scan box
-			$("#scanboxtitle").text("Welcome " + data.first_name + " " + data.last_name);
-			$("#userloans").text(data.loans.value);
-			$("#userrequests").text(data.requests.value);
-			$("#userfees").text("$" + data.fees.value);
-			let timeoutspan = document.querySelector("#usertimeout");
-			// console.log(timeoutspan)
-			sessionTimeout(defaultTimeout, timeoutspan);
-			//$("#usernotes").text(data.user_note.length);
+		fetch(baseURL + "/users/" + $("#userid").value)
+			.then(r => r.json())
+			.then((data) => {
+				user = data
+				// prepare scan box
+				$("#scanboxtitle").textContent = "Welcome " + data.first_name + " " + data.last_name
+				$("#userloans").textContent = data.loans.value
+				$("#userrequests").textContent = data.requests.value
+				$("#userfees").textContent = "$" + data.fees.value
+				let timeoutspan = document.querySelector("#usertimeout")
+				// console.log(timeoutspan)
+				sessionTimeout(defaultTimeout, timeoutspan)
+				//$("#usernotes").textContent = data.user_note.length
 
-			$("#loanstable").find("tr:gt(0)").remove();
+				// Remove loaned data
+				Array.from($("#loanstable tbody").children).forEach(child => child.remove())
 
-			$("#loginbox").addClass("hide");
-			$("#scanbox").toggleClass("hide");
+				hide($("#loginbox"))
+				show($("#scanbox"))
 
-			$("#barcode").focus();
-
-
-		}).fail(function (jqxhr, textStatus, error) {
-			$("#loginerror").toggleClass("hide");
-			$("#userid").val(""); //Clear userid for touchless retry
-			console.log(jqxhr.responseText);
-
-		}).always(function () {
-			$("#userid").prop("disabled", false);
-			$("#myModal").hide();
-			focusLogin();
-		});
+				$("#barcode").focus()
+			}).catch((error) => {
+				show($("#loginerror"))
+				$("#userid").value = "" //Clear userid for touchless retry
+				console.error("Failed to login")
+				console.error(error)
+			}).finally(function () {
+				$("#userid").disabled = false
+				hide($("#myModal"))
+			})
 	}
 }
 
@@ -136,61 +122,50 @@ function loaduser(data) {
 }
 
 function loan() {
-
-	let barcode = $("#barcode").val();
-
+	let barcode = $("#barcode").value
 	if ((barcode != null) && (barcode != "")) {
 		if (barcode == user.user_identifier[0].value || barcode == user.primary_id) {
 			console.log("Re-scanned userid, logging out")
 			logout();
 			return
 		}
-		console.log($("#barcode").val());
-		$("#modalheader").text("Processing request, please wait...");
-		$("#myModal").show();
-		$(".close").hide();
-		$("#barcode").prop("disabled", true);
+		console.log($("#barcode").value)
+		$("#modalheader").textContent = "Processing request, please wait..."
+		hide($("#modalclosex"))
+		show($("#myModal"))
+		$("#barcode").disabled = true
 
-		$.ajax({
-			type: "POST",
-			url: baseURL + "/users/" + user.primary_id + "/loans?item_barcode=" + $("#barcode").val(),
-			contentType: "application/json",
-			dataType: "JSON",
-			data: ``
-		}).done(function (data) {
-			let dueDate = new Date(data.due_date);
-			let dueDateText = (parseInt(dueDate.getMonth()) + 1) + "/" + dueDate.getDate() + "/" + dueDate.getFullYear();
-			$("#loanstable").append("<tr><td>" + data.title + "</td><td>" + dueDateText + "</td></tr>");
-
-			returnToBarcode();
-
-		}).fail(function (jqxhr, textStatus, error) {
-			console.log(jqxhr.responseText);
-
-			$("#modalheader").text("");
-			$("#modalheader").append("Item not available for loan.<br/><br/>Please see the circulation desk for more information.<br/><br/><input class='modalclose' type='button' value='close [6]' id='barcodeerrorbutton' onclick='javascript:returnToBarcode();'/>");
-			$("#barcodeerrorbutton").focus();
-
-			$(".close").show();
-
-			$("#barcode").val("");
-			modalTimeout();
-		}).always(function () {
-			extendTimeout();
-		});
-
+		fetch(baseURL + "/users/" + user.primary_id + "/loans?item_barcode=" + $("#barcode").value, {
+			method: "POST",
+		}).then(r => r.json())
+			.then((data) => {
+				let dueDate = new Date(data.due_date)
+				let dueDateText = (parseInt(dueDate.getMonth()) + 1) + "/" + dueDate.getDate() + "/" + dueDate.getFullYear();
+				$("#loanstable tbody").innerHTML = $("#loanstable tbody").innerHTML + "<tr><td>" + data.title + "</td><td>" + dueDateText + "</td></tr>"
+				returnToBarcode()
+			}).catch((error) => {
+				console.error("Failed to scan")
+				console.error(error)
+				$("#modalheader").textContent = "Item not available for loan.<br/><br/>Please see the circulation desk for more information.<br/><br/><input class='modalclosemain' type='button' value='close [6]' id='barcodeerrorbutton' onclick='javascript:returnToBarcode();'/>"
+				$("#barcodeerrorbutton").focus()
+				show($("#modalclosex"))
+				$("#barcode").value = ""
+				modalTimeout()
+			}).finally(() => {
+				extendTimeout()
+			})
 	}
 }
 
 function modalTimeout() {
 	let timer = 5
-	let timeout = setInterval(function () {
+	let timeout = setInterval(() => {
 		let seconds = parseInt(timer % 60, 10)
-		$("#barcodeerrorbutton").val(`close [${timer}]`)
+		$("#barcodeerrorbutton").value = `close [${timer}]`
 
 		if (--timer < 0) {
 			// $(".close").hide()
-			$("#myModal").hide();
+			hide($("#myModal"))
 			returnToBarcode();
 			clearInterval(timeout);
 		}
@@ -230,25 +205,21 @@ function extendTimeout() {
 }
 
 function logout() {
-	sessiontimer = null;
-	user = {};
-	$("#scanboxtitle").text("");
-	$("#userloans").text("");
-	$("#userrequests").text("");
-	$("#userfees").text("");
-	$("#userid").val("");
-	$("#loginbox").toggleClass("hide");
-	$("#scanbox").toggleClass("hide");
-	$("#userid").focus();
-	$("#barcode").val("");
+	sessiontimer = null
+	user = {}
+	show($("#loginbox"))
+	$("#userid").focus()
+
+	hide($("#scanbox"))
+	$("#scanboxtitle").textContent = ""
+	$("#userloans").textContent = ""
+	$("#userrequests").textContent = ""
+	$("#userfees").textContent = ""
+	$("#barcode").value = ""
+	$("#userid").value = ""
 }
 
-$(document).ready(function () {
-	focusLogin();
-});
-
-function focusLogin() {
-	$(document).ready(function () {
-		$("#userid").focus();
-	})
-}
+document.addEventListener("DOMContentLoaded", (e) => {
+	console.log($)
+	$("#userid").focus()
+})
