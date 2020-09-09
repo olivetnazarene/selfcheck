@@ -3,8 +3,15 @@ const protocol = window.location.protocol + "//";
 const hostname = window.location.hostname;
 const port = window.location.port;
 const baseURL = port ? (protocol + hostname + ":"+ port) : (protocol + hostname);	
+let TOUCH = false
+const configure_for_touch = () => {
+	$("#idinstruction").text("Please scan your ID:")
+	$("#submit").remove()
+	$("#logoutinstruction").text("Scan your ID again to logout")
+	$("#iteminstruction").text("Please scan your next item:")
+}
 
-function initiate() {
+function async initiate() {
 	getModalBox();
 	
 	$("#barcode").bind("keypress", function(e) {
@@ -20,6 +27,15 @@ function initiate() {
 			login();
 		 }
 	});
+
+	const istouch = await fetch("//is-touch")
+	if ("touch" in istouch) {
+		TOUCH = istouch.touch
+		configure_for_touch()
+	}
+	else {
+		console.error("Failed to query `/is-touch` endpoint")
+	}
 }
 
 var modal;

@@ -21,12 +21,12 @@
 			<div class="h1title">Self-Check Service</div>
 			<br/><br/>
 			<div class="databox">
-				<div class="h2title">Please scan your ID:</div>
+				<div class="h2title" id="idinstruction">Please scan or type your ID:</div>
 				<div>
 					<div class="hide errormessage" id="loginerror">Incorrect ID, please try again<br/></div>
 					<input type="text" id="userid" placeholder="ID..."  />
 					<br/><br/>
-					<!-- <input type="button" value="Submit" onclick="javascript:login();"/> -->
+					<input type="button" id="submit" value="Submit" onclick="javascript:login();"/>
 				</div>
 			</div>
 			<br/><br/>
@@ -43,13 +43,13 @@
 							<td><span class="headertablekey">Fines & Fees:</span>&nbsp;<span class="headertablevalue" id="userfees"></span></td>
 							<!-- <td><span class="headertablekey">Notes:</span>&nbsp;<span class="headertablevalue" id="usernotes"></span></td> -->
 							<td><span class="headertablekey">Timeout: </span><span class="headertablevalue" id="usertimeout"></span></td>
-							<td>Scan your ID again to logout <!--or <input type="button" value="Logout" onclick="javascript:logout();"/>--></td>
+							<td id="logoutinstruction">Scan your ID again to logout or <input type="button" value="Logout" onclick="javascript:logout();"/></td>
 							
 						</tr>
 					</table>
 				</div>
 				<br/><br/>
-				<div class="h2title">Please scan your next item:</div>
+				<div class="h2title" id="iteminstruction">Please scan or type your next item:</div>
 				<div>
 					<input type="text" id="barcode" placeholder="Barcode..." />
 				</div>
