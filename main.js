@@ -30,27 +30,12 @@ app.post('/users/:userId/loans?', jsonParser, (req, res)=> {
   console.log(req.body)
   requestLoan(req.params, req.query, req.body, res)
 })
-
+app.get('/is-touch', (req, res) => {
+	res.json({ "touch": config.touch })
+})
 app.listen(port, () => console.log(`Selfcheck has started listening at ${port}`))
-// 
-// Route handler functions
-// 
-function index(req, res){
-  let html;
-  console.log(`Loading index page with request ${req} and touchfree set to ${config.touchfree}`)
-  if (config.touchfree){
-    html = fs.readFileSync('self-check-touchfree.html');  
-  }else{
-    html = fs.readFileSync('self-check-keyboard.html');
-  }
-  res.writeHeader(200, {"Content-Type": "text/html"});
-  res.write(html)
-  res.end()
-  return res
-}
 
 async function getUser(params, res){
-
   console.log(`Retrieving user with id ${params.userId}.`)
 
   let u = await get_api_user(params.userId)
