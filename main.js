@@ -30,9 +30,9 @@ app.post('/users/:userId/loans?', jsonParser, (req, res) => {
 	console.log(req.body)
 	requestLoan(req.params, req.query, req.body, res)
 })
-app.get('/is-touch', (req, res) => {
+app.get('/isCovidSafe', (req, res) => {
 	res.json({
-		"touch": config.touch
+		"covidSafe": config.covidSafe
 	})
 })
 app.listen(port, () => console.log(`Selfcheck has started listening at ${port}`))

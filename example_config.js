@@ -4,4 +4,4 @@ exports.hostname = 'https://api-na.hosted.exlibrisgroup.com'
 exports.apiKey = 'xxxxxxxxxxxxxxxxxxxx'
 exports.libraryName = "XXXXX";
 exports.circDesk = "XXXXXXXXXXXXXXXX";
-exports.touch = true
+exports.covidSafe = true

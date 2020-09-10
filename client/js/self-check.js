@@ -14,8 +14,8 @@ const show = (el) => {
 	el.classList.remove("hide")
 }
 
-let TOUCH = false
-const configure_for_touch = () => {
+let COVID_SAFE = false
+const configure_for_covid_safe = () => {
 	$("#idinstruction").textContent = "Please scan your ID:"
 	$("#submit").remove()
 	$("#logoutinstruction").textContent = "Scan your ID again to logout"
@@ -37,12 +37,12 @@ async function initiate() {
 		}
 	}
 
-	const istouch = await fetch("/is-touch").then(r => r.json())
-	if ("touch" in istouch) {
-		TOUCH = istouch.touch
-		configure_for_touch()
+	const response = await fetch("/isCovidSafe").then(r => r.json())
+	if ("covidSafe" in response) {
+		COVID_SAFE = response.covidSafe
+		configure_for_covid_safe()
 	} else {
-		console.error("Failed to query `/is-touch` endpoint")
+		console.error("Failed to query `/isCovidSafe` endpoint")
 	}
 }
 
