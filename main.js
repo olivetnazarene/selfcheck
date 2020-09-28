@@ -19,7 +19,6 @@ const config = require('./config');
 // 
 // Routes
 // 
-app.get('/', (req, res) => index(req, res))
 app.use(express.static('client'))
 app.get('/users/:userId', (req, res) => {
 	console.log("user id scan");
@@ -45,7 +44,7 @@ async function getUser(params, res) {
 	if (u) {
 		res.json(u)
 	} else {
-		res.send('something went wrong with the lookup')
+		res.json({ error: 'something went wrong with the lookup' })
 	}
 }
 
@@ -55,11 +54,11 @@ async function requestLoan(params, query, body, res) {
 	let loan = await api_request_loan(params.userId, query.item_barcode)
 
 	if (loan.error) {
-		res.send(`${loan.error[0].errorMessage}`)
+		res.json({ error: `${loan.error[0].errorMessage}` })
 	} else if (loan) {
 		res.json(loan)
 	} else {
-		res.send('something went wrong with the lookup')
+		res.json({ error: 'something went wrong with the lookup' })
 	}
 
 }
@@ -102,7 +101,7 @@ function api_request_loan(userid, barcode) {
 		method: 'post',
 		headers: {
 			'Content-Type': `application/xml`,
-			Authorization: `apikey ${config.apiKey}`
+			'Authorization': `apikey ${config.apiKey}`
 		}
 	}
 
