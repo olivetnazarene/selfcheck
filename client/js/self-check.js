@@ -91,8 +91,9 @@ function login() {
 			.then(r => r.json())
 			.then((data) => {
 				user = data
+				console.log(data)
 				// prepare scan box
-				$("#scanboxtitle").textContent = "Welcome " + data.first_name + " " + data.last_name
+				$("#scanboxtitle").textContent = "Welcome " + data.pref_first_name + " " + data.pref_last_name
 				$("#userloans").textContent = data.loans.value
 				$("#userrequests").textContent = data.requests.value
 				$("#userfees").textContent = "$" + data.fees.value
