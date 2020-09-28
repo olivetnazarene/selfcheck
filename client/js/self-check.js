@@ -5,7 +5,8 @@ const port = window.location.port;
 const baseURL = port ? (protocol + hostname + ":" + port) : (protocol + hostname);
 
 // This is some kind of clever black magic that makes "document" work in functions
-const $ = query => document.querySelector(query)
+// The "|| {}" lets it fail on .focus() or .value without blowing up functions
+const $ = query => document.querySelector(query) || {}
 
 const hide = (el) => {
 	el.classList.add("hide")
