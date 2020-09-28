@@ -40,7 +40,9 @@ async function initiate() {
 	const response = await fetch("/isCovidSafe").then(r => r.json())
 	if ("covidSafe" in response) {
 		COVID_SAFE = response.covidSafe
-		configure_for_covid_safe()
+		if (COVID_SAFE) {
+			configure_for_covid_safe()
+		}
 	} else {
 		console.error("Failed to query `/isCovidSafe` endpoint")
 	}
