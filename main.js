@@ -52,12 +52,17 @@ async function requestLoan(params, query, body, res) {
 	console.log(`Loan processing started ${JSON.stringify(params)} and ${JSON.stringify(query)} and ${JSON.stringify(body)}`)
 
 	let loan = await api_request_loan(params.userId, query.item_barcode)
+	console.log(loan)
 
 	if (loan.error) {
-		res.json({ error: `${loan.error[0].errorMessage}` })
+		console.log("API returned with error")
+		res.json({ error: loan.error[0].errorMessage })
 	} else if (loan) {
+		console.log("successfully loaned book to user")
+		console.log(loan)
 		res.json(loan)
 	} else {
+		console.log("No error from API but something else went wrong")
 		res.json({ error: 'something went wrong with the lookup' })
 	}
 
@@ -129,5 +134,4 @@ function api_request_loan(userid, barcode) {
 	}
 
 	return getData(options)
-
 }
