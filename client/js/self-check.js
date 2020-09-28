@@ -141,22 +141,33 @@ function loan() {
 			method: "POST",
 		}).then(r => r.json())
 			.then((data) => {
-				let dueDate = new Date(data.due_date)
-				let dueDateText = (parseInt(dueDate.getMonth()) + 1) + "/" + dueDate.getDate() + "/" + dueDate.getFullYear();
-				$("#loanstable tbody").innerHTML = $("#loanstable tbody").innerHTML + "<tr><td>" + data.title + "</td><td>" + dueDateText + "</td></tr>"
-				returnToBarcode()
+				if ("error" in data && data.error) {
+					console.log("Loan Error")
+					console.log(data)
+					showLoanError(data.error + ".<br/><br/>Please see the circulation desk for more information.<br/><br/><input class='modalclosemain' type='button' value='close [6]' id='barcodeerrorbutton' onclick='javascript:returnToBarcode();'/>")
+				}
+				else {
+					let dueDate = new Date(data.due_date)
+					let dueDateText = (parseInt(dueDate.getMonth()) + 1) + "/" + dueDate.getDate() + "/" + dueDate.getFullYear();
+					$("#loanstable tbody").innerHTML = $("#loanstable tbody").innerHTML + "<tr><td>" + data.title + "</td><td>" + dueDateText + "</td></tr>"
+					returnToBarcode()
+				}
 			}).catch((error) => {
-				console.error("Failed to scan")
+				console.error("Query Error")
 				console.error(error)
-				$("#modalheader").textContent = "Item not available for loan.<br/><br/>Please see the circulation desk for more information.<br/><br/><input class='modalclosemain' type='button' value='close [6]' id='barcodeerrorbutton' onclick='javascript:returnToBarcode();'/>"
-				$("#barcodeerrorbutton").focus()
-				show($("#modalclosex"))
-				$("#barcode").value = ""
-				modalTimeout()
+				showLoanError("Item not available for loan.<br/><br/>Please see the circulation desk for more information.<br/><br/><input class='modalclosemain' type='button' value='close [6]' id='barcodeerrorbutton' onclick='javascript:returnToBarcode();'/>")
 			}).finally(() => {
 				extendTimeout()
 			})
 	}
+}
+const showLoanError = message => {
+	$("#modalheader").innerHTML = message
+	$("#barcodeerrorbutton").focus()
+	show($("#modalclosex"))
+	show($("#myModal"))
+	$("#barcode").value = ""
+	modalTimeout()
 }
 
 function modalTimeout() {
