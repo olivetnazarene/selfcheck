@@ -234,7 +234,7 @@ textarea {
 	border-radius: 10px;
 }
 
-.modalheaderdiv {
+#modalheader {
 	text-align: center;
 	font-weight: bold;
 	font-size: 120%;
@@ -269,15 +269,15 @@ textarea {
 }
 
 /* The Close Button */
-.modalclosex {
+#modalclosex {
 	color: #aaa;
 	float: right;
 	font-size: 16px;
 	font-weight: bold;
 }
 
-.modalclosex:hover,
-.modalclosex:focus {
+#modalclosex:hover,
+#modalclosex:focus {
 	color: black;
 	text-decoration: none;
 	cursor: pointer;
