@@ -93,7 +93,8 @@ function login() {
 				user = data
 				console.log(data)
 				// prepare scan box
-				$("#scanboxtitle").textContent = "Welcome " + data.pref_first_name + " " + data.pref_last_name
+				const first_name = data.pref_first_name || data.first_name
+				$("#scanboxtitle").textContent = "Welcome " + first_name + " " + data.pref_last_name
 				$("#userloans").textContent = data.loans.value
 				$("#userrequests").textContent = data.requests.value
 				$("#userfees").textContent = "$" + data.fees.value
