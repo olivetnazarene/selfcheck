@@ -95,7 +95,7 @@ function login() {
 				// prepare scan box
 				const first_name = data.pref_first_name || data.first_name
 				const last_name = data.pref_last_name || data.last_name
-				$("#scanboxtitle").textContent = "Welcome " + first_name + " " + last_name 
+				$("#scanboxtitle").textContent = "Welcome " + first_name + " " + last_name
 				$("#userloans").textContent = data.loans.value
 				$("#userrequests").textContent = data.requests.value
 				$("#userfees").textContent = "$" + data.fees.value
@@ -116,6 +116,7 @@ function login() {
 				$("#userid").value = "" //Clear userid for touchless retry
 				console.error("Failed to login")
 				console.error(error)
+				$("#userid").focus()
 			}).finally(function () {
 				$("#userid").disabled = false
 				hide($("#myModal"))
