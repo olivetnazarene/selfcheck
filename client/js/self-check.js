@@ -95,7 +95,7 @@ function login() {
 				// prepare scan box
 				const first_name = data.pref_first_name || data.first_name
 				const last_name = data.pref_last_name || data.last_name
-				$("#scanboxtitle").textContent = "Welcome " + first_name + " " + last_name 
+				$("#scanboxtitle").textContent = "Welcome " + first_name + " " + last_name
 				$("#userloans").textContent = data.loans.value
 				$("#userrequests").textContent = data.requests.value
 				$("#userfees").textContent = "$" + data.fees.value
@@ -107,18 +107,21 @@ function login() {
 				// Remove loaned data
 				Array.from($("#loanstable tbody").children).forEach(child => child.remove())
 
+				// We don't need this disabled any more (I think we disable it to prevent double login kind of problems)
+				$("#userid").disabled = false
 				hide($("#loginbox"))
-				show($("#scanbox"))
 
+				show($("#scanbox"))
+				hide($("#myModal"))
 				$("#barcode").focus()
 			}).catch((error) => {
 				show($("#loginerror"))
 				$("#userid").value = "" //Clear userid for touchless retry
 				console.error("Failed to login")
 				console.error(error)
-			}).finally(function () {
-				$("#userid").disabled = false
 				hide($("#myModal"))
+				$("#userid").disabled = false
+				$("#userid").focus()
 			})
 	}
 }
