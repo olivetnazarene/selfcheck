@@ -34,10 +34,8 @@ const config = require('./config')
 }
 
 app.set('trust proxy', true)
-const circDeskFromIp = ip => {
-	const matchingLocation = config.locations.filter(location => location.ipAddresses.includes(ip))
-	return matchingLocation?.circDesk
-}
+const libraryConfigFromIp = ip =>
+	config.locations.filter(location => location.ipAddresses.includes(ip))
 // 
 // Routes
 // 
@@ -52,9 +50,8 @@ app.post('/users/:userId/loans?', jsonParser, (req, res) => {
 	requestLoan(req.params, req.query, req.ip, req.body, res)
 })
 app.get('/isCovidSafe', (req, res) => {
-	res.json({
-		"covidSafe": config.covidSafe
-	})
+	const { covidSafe } = libraryConfigFromIp(req.ip)
+	res.json({ covidSafe })
 })
 app.listen(port, () => console.log(`Selfcheck has started listening at ${port}`))
 
@@ -119,8 +116,8 @@ function get_api_user(id) {
 }
 
 function api_request_loan(userid, ip, barcode) {
-	const circDesk = circDeskFromIp(ip)
-	const library_xml = `<?xml version='1.0' encoding='UTF-8'?><item_loan><circ_desk>${circDesk}</circ_desk><library>${config.libraryName}</library></item_loan>`
+	const { circDesk, libraryName } = libraryConfigFromIp(ip)
+	const library_xml = `<?xml version='1.0' encoding='UTF-8'?><item_loan><circ_desk>${circDesk}</circ_desk><library>${libraryName}</library></item_loan>`
 	const options = {
 		baseURL: config.hostname,
 		port: 443,

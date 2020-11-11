@@ -2,13 +2,15 @@
 module.exports = {
     "hostname": "https://api-na.hosted.exlibrisgroup.com",
     "apiKey": "xxxxxxxxxxxxxxxxxxxx",
-    "libraryName": "XXXXX",
-    "covidSafe": true,
     "locations": [{
+        "libraryName": "XXXXX",
         "circDesk": "XXXXXXXXXXXXXXXX",
-        "ipAddresses": ['127.0.0.1']
+        "ipAddresses": ['127.0.0.1'],
+        "covidSafe": true,
     }, {
+        "libraryName": "XXXXX",
         "circDesk": "XXXXXXXXXXXXXXXX",
-        "ipAddresses": ['127.0.0.2']
+        "ipAddresses": ['127.0.0.2'],
+        "covidSafe": true,
     }]
 }
