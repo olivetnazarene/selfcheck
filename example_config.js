@@ -1,7 +1,14 @@
 // Rename this file to `config.js` and populate the values for your institution
-
-exports.hostname = 'https://api-na.hosted.exlibrisgroup.com'
-exports.apiKey = 'xxxxxxxxxxxxxxxxxxxx'
-exports.libraryName = "XXXXX";
-exports.circDesk = "XXXXXXXXXXXXXXXX";
-exports.covidSafe = true
+module.exports = {
+    "hostname": "https://api-na.hosted.exlibrisgroup.com",
+    "apiKey": "xxxxxxxxxxxxxxxxxxxx",
+    "libraryName": "XXXXX",
+    "covidSafe": true,
+    "locations": [{
+        "circDesk": "XXXXXXXXXXXXXXXX",
+        "ipAddresses": ['127.0.0.1']
+    }, {
+        "circDesk": "XXXXXXXXXXXXXXXX",
+        "ipAddresses": ['127.0.0.2']
+    }]
+}

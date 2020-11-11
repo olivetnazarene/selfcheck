@@ -15,7 +15,29 @@ const port = process.env.NODE_PORT || 3000;
 // 
 // Setup API settings
 // 
-const config = require('./config');
+const config = require('./config')
+// ensure that the venn diagram of ips does not have intersections
+{
+	const all_ip_array = [].concat(...config.locations.map(l => l.ipAddresses))
+	const all_ip_set = new Set(all_ip_array)
+	if (all_ip_array.length !== all_ip_set.size) {
+		throw ("Multiple locations are configured with the same ip address but that's not allowed")
+	}
+}
+// ensure that circ desks have different names
+{
+	const circDeskNames_array = config.locations.map(l => l.circDesk)
+	const circDeskNames_set = new Set(circDeskNames_array)
+	if (circDeskNames_array.length !== circDeskNames_set.size) {
+		throw ("Multiple locations are configured with the same name but that's not allowed")
+	}
+}
+
+app.set('trust proxy', true)
+const circDeskFromIp = ip => {
+	const matchingLocation = config.locations.filter(location => location.ipAddresses.includes(ip))
+	return matchingLocation?.circDesk
+}
 // 
 // Routes
 // 
@@ -27,7 +49,7 @@ app.get('/users/:userId', (req, res) => {
 app.post('/users/:userId/loans?', jsonParser, (req, res) => {
 	console.log(req.query.item_barcode)
 	console.log(req.body)
-	requestLoan(req.params, req.query, req.body, res)
+	requestLoan(req.params, req.query, req.ip, req.body, res)
 })
 app.get('/isCovidSafe', (req, res) => {
 	res.json({
@@ -48,10 +70,10 @@ async function getUser(params, res) {
 	}
 }
 
-async function requestLoan(params, query, body, res) {
+async function requestLoan(params, query, ip, body, res) {
 	console.log(`Loan processing started ${JSON.stringify(params)} and ${JSON.stringify(query)} and ${JSON.stringify(body)}`)
 
-	let loan = await api_request_loan(params.userId, query.item_barcode)
+	let loan = await api_request_loan(params.userId, ip, query.item_barcode)
 	console.log(loan)
 
 	if (loan.error) {
@@ -96,8 +118,9 @@ function get_api_user(id) {
 	return getData(options)
 }
 
-function api_request_loan(userid, barcode) {
-	let library_xml = `<?xml version='1.0' encoding='UTF-8'?><item_loan><circ_desk>${config.circDesk}</circ_desk><library>${config.libraryName}</library></item_loan>`
+function api_request_loan(userid, ip, barcode) {
+	const circDesk = circDeskFromIp(ip)
+	const library_xml = `<?xml version='1.0' encoding='UTF-8'?><item_loan><circ_desk>${circDesk}</circ_desk><library>${config.libraryName}</library></item_loan>`
 	const options = {
 		baseURL: config.hostname,
 		port: 443,
