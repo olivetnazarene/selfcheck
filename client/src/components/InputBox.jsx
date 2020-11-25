@@ -3,6 +3,7 @@ import { ArrowCircleLeftIcon } from "./Icons"
 
 const InputBox = ({ Icon, onClick }) => {
 	const textInput = useRef()
+	const callOnClick = () => onClick(textInput.current.value)
 	return (
 		<div class="flex">
 			<div class="flex-none flex items-center m-5">
@@ -10,8 +11,13 @@ const InputBox = ({ Icon, onClick }) => {
 			</div>
 			<input ref={textInput}
 				class="text-2xl bg-transparent outline-none"
-				placeholder=" Scan your barcode" />
-			<a onClick={() => onClick(textInput.current.value)} href="#" class="flex-none flex items-center m-2 p-2 rounded cursor-pointer bg-blue-400 text-gray-200 hover:bg-blue-300 hover:text-white hover:shadow-md focus:bg-blue-600 focus:shadow-inner">
+				placeholder=" Scan your barcode"
+				onKeyPress={key => {
+					if (key.key === "Enter") {
+						callOnClick()
+					}
+				}} />
+			<a onClick={callOnClick} href="#" class="flex-none flex items-center m-2 p-2 rounded cursor-pointer bg-blue-400 text-gray-200 hover:bg-blue-300 hover:text-white hover:shadow-md focus:bg-blue-600 focus:shadow-inner">
 				<ArrowCircleLeftIcon classes="w-10 h-10" />
 			</a>
 		</div>
