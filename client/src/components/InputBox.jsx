@@ -5,12 +5,12 @@ const InputBox = ({ Icon, onClick }) => {
 	const textInput = useRef()
 	const callOnClick = () => onClick(textInput.current.value)
 	return (
-		<div class="flex">
+		<div class="flex bg-gray-100 rounded-lg border-blue-400 border-4">
 			<div class="flex-none flex items-center m-5">
 				<Icon classes={"w-8 h-8"} />
 			</div>
 			<input ref={textInput}
-				class="text-2xl bg-transparent outline-none"
+				class="text-2xl bg-transparent outline-none flex-grow"
 				placeholder=" Scan your barcode"
 				onKeyPress={key => {
 					if (key.key === "Enter") {
