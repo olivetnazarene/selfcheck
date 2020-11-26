@@ -19,7 +19,7 @@ const LoginLayout = ({ backgroundImageUrl, library, organization, login, alertMe
 					{organization}
 				</div>
 			</div>
-			<div class="flex-shrink flex-row bg-gray-100 rounded-lg border-blue-400 border-4">
+			<div class="flex-shrink flex-row">
 				<InputBox Icon={IdentificationIcon} onClick={login} />
 			</div>
 			<div class="flex-shrink">

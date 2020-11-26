@@ -7,11 +7,11 @@ import AlertBox from "./AlertBox"
 import InputBox from "./InputBox"
 
 
-const CheckoutLayout = ({ library, organization, userName, userLoans, userRequests, userFines, booksCheckedOut }) =>
+const CheckoutLayout = ({ library, organization, userName, userLoans, userRequests, userFines, timeout, booksCheckedOut }) =>
 	<div class="h-screen w-screen flex flex-col">
 
 		{/* <!-- Header Bar --> */}
-		<div class="flex-shrink bg-blue-500 flex content-between items-center p-2 shadow-md" style={{ zIndex: 1 }}>
+		<div class="flex-shrink bg-blue-400 flex content-between items-center p-2 shadow-md" style={{ zIndex: 1 }}>
 
 			{/* <!-- Library Name --> */}
 			<div class="flex-auto text-gray-100 m-2">
@@ -25,9 +25,9 @@ const CheckoutLayout = ({ library, organization, userName, userLoans, userReques
 
 			{/* <!-- User Details --> */}
 			<div class="flex-auto flex flex-row justify-end items-center">
-				<UserCircleIcon classes="w-10 h-10 m-2 text-gray-200" />
+				<UserCircleIcon classes="w-10 h-10 m-2 text-blue-100" />
 
-				<div class="text-2xl mr-4 text-gray-300">
+				<div class="text-2xl mr-4 text-white">
 					{userName}
 				</div>
 
@@ -40,15 +40,17 @@ const CheckoutLayout = ({ library, organization, userName, userLoans, userReques
 					value={userRequests} />
 				<PillBox
 					title={"Fines & Fees"}
-					value={userFines} />
+					value={"$" + userFines} />
+				<PillBox
+					value={timeout} />
 			</div>
 		</div>
 
 		{/* <!-- Main Content --> */}
-		<div class="flex-auto bg-gray-300 flex flex-col justify-center items-center">
+		<div class="flex-auto bg-gray-200 flex flex-col justify-center items-center">
 
 			{/* <!-- Barcode Scanner --> */}
-			<div class="flex-shrink w-3/4 flex-row bg-gray-100 rounded-lg border-blue-400 border-4 mt-20">
+			<div class="flex-shrink w-3/4 mt-20">
 				<InputBox Icon={BookOpenIcon} onClick={() => alert("yay")} />
 				{/* <div class="flex">
 					<div class="flex-none flex items-center m-5">
