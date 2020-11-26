@@ -71,6 +71,7 @@ class App extends Component {
 				userLoans={this.state.userLoans}
 				userRequests={this.state.userRequests}
 				userFines={this.state.userFines}
+				timeout={this.state.logoutTimeLeft}
 				booksCheckedOut={[{ dueDate: "01/22/1924", author: "Daniel Block", title: "The Gospel According to Moses" }]}
 			/>
 		}
