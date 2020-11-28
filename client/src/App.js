@@ -7,8 +7,11 @@ import LoginLayout from "./components/LoginLayout"
 import CheckoutLayout from './components/CheckoutLayout';
 
 import login from "./api/login"
+import checkout from "./api/checkout"
 
-const ALERT_TIMEOUT_SECONDS = 10
+const LOGIN_ALERT_TIMEOUT_SECONDS = 10
+const CHECKOUT_ALERT_TIMEOUT_SECONDS = 2
+const LOGOUT_TIME_LIMIT = 60
 
 const INITIAL_STATE = {
 	loggedIn: false,
@@ -16,12 +19,16 @@ const INITIAL_STATE = {
 	userLoans: 0,
 	userRequests: 0,
 	userFines: 0,
-	loginFailureMessage: "",
-	logoutTimeLeft: 61,
-	showAlert: false,
+	loginAlertMessage: "",
+	showLoginAlert: false,
+	logoutTimeLeft: LOGOUT_TIME_LIMIT,
+	showCheckoutAlert: false,
+	checkoutAlertMessage: "",
+	booksCheckedOut: [],
 }
 
 class App extends Component {
+	userBarcode = null
 	constructor(props) {
 		super(props)
 		this.state = Object.assign({}, INITIAL_STATE)
@@ -29,23 +36,53 @@ class App extends Component {
 	doLogin(userId) {
 		const newUser = login({ userId })
 		if ("failureMessage" in newUser) {
-			this.setState({ loginFailureMessage: newUser.failureMessage, showAlert: true })
-			window.clearTimeout(this.failureMessageTimeout)
-			this.failureMessageTimeout = window.setTimeout(() => {
-				this.setState({ showAlert: false })
-			}, ALERT_TIMEOUT_SECONDS * 1000)
+			this.setState({ loginAlertMessage: newUser.failureMessage, showLoginAlert: true })
+			window.clearTimeout(this.loginFailureMessageTimeout)
+			this.loginFailureMessageTimeout = window.setTimeout(() => {
+				this.setState({ showLoginAlert: false })
+			}, LOGIN_ALERT_TIMEOUT_SECONDS * 1000)
 		}
 		else {
 			const { userName, userLoans, userRequests, userFines } = newUser
 			this.setState({
 				userName, userLoans, userRequests, userFines,
-				logoutTimeLeft: 61,
+				showLoginAlert: false,
+				logoutTimeLeft: LOGOUT_TIME_LIMIT,
 				loggedIn: true,
 			})
+			this.userBarcode = userId
 		}
 	}
 	doLogout() {
 		this.setState(Object.assign({}, INITIAL_STATE))
+	}
+	doCheckoutBook(bookBarcode) {
+		// Allow Logout by scanning barcode
+		if (bookBarcode === this.userBarcode) {
+			this.doLogout()
+		}
+
+		const newBook = checkout({ bookBarcode })
+		if ("failureMessage" in newBook) {
+			// Error checking out book
+			this.setState({
+				logoutTimeLeft: LOGOUT_TIME_LIMIT,
+				showCheckoutAlert: true,
+				checkoutAlertMessage: newBook.failureMessage
+			})
+			window.clearTimeout(this.checkoutFailureMessageTimeout)
+			this.checkoutFailureMessageTimeout = window.setTimeout(() => {
+				this.setState({ showCheckoutAlert: false })
+			}, CHECKOUT_ALERT_TIMEOUT_SECONDS * 1000)
+		}
+		else {
+			// Successfully checked out book
+			this.setState({
+				logoutTimeLeft: LOGOUT_TIME_LIMIT,
+				showCheckoutAlert: false,
+				booksCheckedOut: [newBook].concat(this.state.booksCheckedOut)
+			})
+		}
 	}
 
 
@@ -56,7 +93,6 @@ class App extends Component {
 			}
 			const newLogoutTimeLeft = this.state.logoutTimeLeft > 1 ? this.state.logoutTimeLeft - 1 : 0
 			this.setState({ logoutTimeLeft: newLogoutTimeLeft })
-			console.log(this.state.logoutTimeLeft)
 		}, 1000)
 	}
 	componentWillUnmount() {
@@ -72,7 +108,10 @@ class App extends Component {
 				userRequests={this.state.userRequests}
 				userFines={this.state.userFines}
 				timeout={this.state.logoutTimeLeft}
-				booksCheckedOut={[{ dueDate: "01/22/1924", author: "Daniel Block", title: "The Gospel According to Moses" }]}
+				books={this.state.booksCheckedOut}
+				checkoutBook={this.doCheckoutBook.bind(this)}
+				showAlert={this.state.showCheckoutAlert}
+				alertMessage={this.state.checkoutAlertMessage}
 			/>
 		}
 		else {
@@ -81,8 +120,8 @@ class App extends Component {
 				library="Buswell Library"
 				organization="Wheaton College"
 				login={this.doLogin.bind(this)}
-				showAlert={this.state.showAlert}
-				alertMessage={this.state.loginFailureMessage}
+				showAlert={this.state.showLoginAlert}
+				alertMessage={this.state.loginAlertMessage}
 			/>
 		}
 	}
