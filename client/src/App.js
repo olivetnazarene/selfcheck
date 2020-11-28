@@ -59,9 +59,10 @@ class App extends Component {
 	doCheckoutBook(bookBarcode) {
 		// Allow Logout by scanning barcode
 		if (bookBarcode === this.userBarcode) {
-			this.doLogout()
+			return this.doLogout()
 		}
 
+		// Otherwise, try checking the book out
 		const newBook = checkout({ bookBarcode })
 		if ("failureMessage" in newBook) {
 			// Error checking out book
