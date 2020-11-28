@@ -1,7 +1,7 @@
 import { Component } from 'react'
 
 import './tailwind.output.css'
-import './App.css';
+// import './App.css';
 
 import LoginLayout from "./components/LoginLayout"
 import CheckoutLayout from './components/CheckoutLayout';
