@@ -71,25 +71,8 @@ const CheckoutLayout = ({ library, organization, userName, userLoans, userReques
 			</AlertBox>
 
 			{/* <!-- Book Table --> */}
-			<div class="flex-auto w-3/4 px-8">
-				{booksCheckedOut &&
-					<table class="table-auto w-full">
-						<thead class="uppercase text-sm font-bold">
-							<tr>
-								<td class="px-2 text-blue-800">Due Date</td>
-								<td class="px-2 text-blue-800">Book</td>
-							</tr>
-						</thead>
-						<tbody class="text-xl">
-							{booksCheckedOut.map(b =>
-								<tr key={b.title + b.author} class="border-b border-gray-400">
-									<td class="p-2">{b.dueDate}</td>
-									<td class="p-2">{b.title + " // " + b.author}</td>
-								</tr>
-							)}
-						</tbody>
-					</table>
-				}
+			<div class="flex-auto w-3/4 px-8 mt-2">
+				<BookTable books={books} />
 			</div>
 		</div>
 	</div>
