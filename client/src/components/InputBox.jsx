@@ -3,7 +3,10 @@ import { ArrowCircleLeftIcon } from "./Icons"
 
 const InputBox = ({ Icon, onClick }) => {
 	const textInput = useRef()
-	const callOnClick = () => onClick(textInput.current.value)
+	const callOnClick = () => {
+		onClick(textInput.current.value)
+		textInput.current.value = ""
+	}
 	return (
 		<div class="flex bg-gray-100 rounded-lg border-blue-400 border-4">
 			<div class="flex-none flex items-center m-5">
