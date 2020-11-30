@@ -2,7 +2,7 @@ import { baseUrl } from './apiConstants'
 
 const loginUrl = userBarcode => `${baseUrl}/users/${userBarcode}`
 
-export default async function login({ userId: userBarcode }) {
+async function login({ userBarcode }) {
 	if (!userBarcode) {
 		// No barcode supplied
 		return {
@@ -36,3 +36,4 @@ export default async function login({ userId: userBarcode }) {
 		}
 	}
 }
+export default login
