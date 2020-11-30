@@ -3,7 +3,8 @@ import { baseUrl } from './apiConstants'
 const checkoutUrl = ({ bookBarcode, userId }) =>
     `${baseUrl}/users/${userId}/loans?item_barcode=${bookBarcode}`
 
-export default async function checkout({ bookBarcode, userId }) {
+async function checkout({ bookBarcode, userId }) {
+    console.log(bookBarcode, userId)
     if (!bookBarcode) {
         return {
             failureMessage: "Please enter a book barcode to checkout."
@@ -13,7 +14,6 @@ export default async function checkout({ bookBarcode, userId }) {
         try {
             const bookResponse = await fetch(checkoutUrl({ bookBarcode, userId }))
             const book = await bookResponse.json()
-            console.log(book)
 
             if ("error" in book && book.error) {
                 console.log("Loan Error")
@@ -24,12 +24,11 @@ export default async function checkout({ bookBarcode, userId }) {
             }
             else {
                 let dueDateObj = new Date(book.due_date)
-                let dueDate = Intl.DateTimeFormat("en-US", { day: "numeric", month: "long", year: "numeric" }).format(dueDateObj)
+                let dueDateString = Intl.DateTimeFormat("en-US", { day: "numeric", month: "long", year: "numeric" }).format(dueDateObj)
                 return {
                     barcode: bookBarcode,
-                    author: "Fred",
-                    title: book.title,
-                    dueDate
+                    bookString: book.title, // "title" includes the author's name, hence "bookString"
+                    dueDate: dueDateString,
                 }
             }
         }
@@ -42,3 +41,4 @@ export default async function checkout({ bookBarcode, userId }) {
         }
     }
 }
+export default checkout
