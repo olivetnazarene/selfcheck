@@ -33,8 +33,8 @@ class App extends Component {
 		super(props)
 		this.state = Object.assign({}, INITIAL_STATE)
 	}
-	doLogin(userId) {
-		const newUser = login({ userId })
+	async doLogin(userId) {
+		const newUser = await login(userId)
 		if ("failureMessage" in newUser) {
 			this.setState({ loginAlertMessage: newUser.failureMessage, showLoginAlert: true })
 			window.clearTimeout(this.loginFailureMessageTimeout)
