@@ -64,7 +64,7 @@ class App extends Component {
 		}
 
 		const checkedOutBarcodes = this.state.booksCheckedOut.map(b => b.barcode)
-		if (checkedOutBarcodes.includes(barcode)) {
+		if (checkedOutBarcodes.includes(bookBarcode)) {
 			// Promote Book in List
 			const oldBooksCheckedOut = this.state.booksCheckedOut.slice()
 			const thisBookIndex = oldBooksCheckedOut.findIndex(b => b.barcode === bookBarcode)
