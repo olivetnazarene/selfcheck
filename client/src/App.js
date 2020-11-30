@@ -19,6 +19,7 @@ const INITIAL_STATE = {
 	userLoans: 0,
 	userRequests: 0,
 	userFines: 0,
+	userId: null,
 	loginAlertMessage: "",
 	showLoginAlert: false,
 	logoutTimeLeft: LOGOUT_TIME_LIMIT,
@@ -33,8 +34,8 @@ class App extends Component {
 		super(props)
 		this.state = Object.assign({}, INITIAL_STATE)
 	}
-	async doLogin(userId) {
-		const newUser = await login(userId)
+	async doLogin(userBarcode) {
+		const newUser = await login({ userBarcode })
 		if ("failureMessage" in newUser) {
 			this.setState({ loginAlertMessage: newUser.failureMessage, showLoginAlert: true })
 			window.clearTimeout(this.loginFailureMessageTimeout)
@@ -43,9 +44,9 @@ class App extends Component {
 			}, LOGIN_ALERT_TIMEOUT_SECONDS * 1000)
 		}
 		else {
-			const { userName, userLoans, userRequests, userFines } = newUser
+			const { userName, userLoans, userRequests, userFines, userId } = newUser
 			this.setState({
-				userName, userLoans, userRequests, userFines,
+				userName, userLoans, userRequests, userFines, userId,
 				showLoginAlert: false,
 				logoutTimeLeft: LOGOUT_TIME_LIMIT,
 				loggedIn: true,

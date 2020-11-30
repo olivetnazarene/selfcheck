@@ -1,9 +1,9 @@
 import { baseURL as baseUrl } from './apiConstants'
 
-const loginUrl = userId => `${baseUrl}/users/${userId}`
+const loginUrl = userBarcode => `${baseUrl}/users/${userBarcode}`
 
-export default async function login(userId) {
-	if (!userId) {
+export default async function login({ userId: userBarcode }) {
+	if (!userBarcode) {
 		// No barcode supplied
 		return {
 			failureMessage: "Please enter a barcode number to login."
@@ -12,7 +12,7 @@ export default async function login(userId) {
 	else {
 		// Try to load user
 		try {
-			const userResponse = await fetch(loginUrl(userId))
+			const userResponse = await fetch(loginUrl(userBarcode))
 			const user = await userResponse.json()
 			console.log(user)
 
@@ -24,6 +24,7 @@ export default async function login(userId) {
 				userLoans: user.loans.value,
 				userRequests: user.requests.value,
 				userFines: user.fees.value,
+				userId: user.primary_id
 			}
 		}
 		catch (error) {
