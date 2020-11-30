@@ -31,13 +31,6 @@ export default async function checkout({ bookBarcode, userId }) {
                     title: book.title,
                     dueDate
                 }
-                prependBookToTable({
-                    barcode,
-                    title: data.title,
-                    dueDate: dueDateText
-                })
-                sessionScans.push(barcode)
-                returnToBarcode()
             }
         }
         catch (error) {
