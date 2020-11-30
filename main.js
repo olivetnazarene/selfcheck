@@ -18,7 +18,7 @@ const port = process.env.NODE_PORT || 3000;
 const config = require('./config')
 // ensure that the venn diagram of ips does not have intersections
 {
-	const all_ip_array = [].concat(...config.locations.map(l => l.ipAddresses))
+	const all_ip_array = [].concat(...config.locations.map(l => l.permitIpAddresses))
 	const all_ip_set = new Set(all_ip_array)
 	if (all_ip_array.length !== all_ip_set.size) {
 		throw ("Multiple locations are configured with the same ip address but that's not allowed")
@@ -26,7 +26,7 @@ const config = require('./config')
 }
 // ensure that circ desks have different names
 {
-	const circDeskNames_array = config.locations.map(l => l.circDesk)
+	const circDeskNames_array = config.locations.map(l => l.apiCircDesk)
 	const circDeskNames_set = new Set(circDeskNames_array)
 	if (circDeskNames_array.length !== circDeskNames_set.size) {
 		throw ("Multiple locations are configured with the same name but that's not allowed")
@@ -35,11 +35,11 @@ const config = require('./config')
 
 app.set('trust proxy', true)
 const libraryConfigFromIp = ip =>
-	config.locations.filter(location => location.ipAddresses.includes(ip))
+	config.locations.find(location => location.permitIpAddresses.includes(ip))
 // 
 // Routes
 // 
-app.use(express.static('client'))
+app.use(express.static('client/build'))
 app.get('/users/:userId', (req, res) => {
 	console.log("user id scan");
 	getUser(req.params, res);
@@ -116,8 +116,8 @@ function get_api_user(id) {
 }
 
 function api_request_loan(userid, ip, barcode) {
-	const { circDesk, libraryName } = libraryConfigFromIp(ip)
-	const library_xml = `<?xml version='1.0' encoding='UTF-8'?><item_loan><circ_desk>${circDesk}</circ_desk><library>${libraryName}</library></item_loan>`
+	const { apiCircDesk, apiLibraryName } = libraryConfigFromIp(ip)
+	const library_xml = `<?xml version='1.0' encoding='UTF-8'?><item_loan><circ_desk>${apiCircDesk}</circ_desk><library>${apiLibraryName}</library></item_loan>`
 	const options = {
 		baseURL: config.hostname,
 		port: 443,

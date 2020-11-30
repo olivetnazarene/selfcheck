@@ -1,16 +1,22 @@
 // Rename this file to `config.js` and populate the values for your institution
 module.exports = {
     "hostname": "https://api-na.hosted.exlibrisgroup.com",
-    "apiKey": "xxxxxxxxxxxxxxxxxxxx",
+    "apiKey": "XXXXXXXXXXXXXXXXXXXX",
     "locations": [{
-        "libraryName": "XXXXX",
-        "circDesk": "XXXXXXXXXXXXXXXX",
-        "ipAddresses": ['127.0.0.1'],
+        "featureImage": "url/to/image.jpg",
+        "libraryNameString": "Friendly Library Name",
+        "organizationNameString": "Friendly Organization Name",
+        "apiLibraryName": "XXXXX",
+        "apiCircDesk": "XXXXXXXXXXXXXXXX",
+        "permitIpAddresses": ['127.0.0.1'],
         "covidSafe": true,
     }, {
-        "libraryName": "XXXXX",
-        "circDesk": "XXXXXXXXXXXXXXXX",
-        "ipAddresses": ['127.0.0.2'],
+        "featureImage": "url/to/image.jpg",
+        "libraryNameString": "Friendly Library Name",
+        "organizationNameString": "Friendly Organization Name",
+        "apiLibraryName": "XXXXX",
+        "apiCircDesk": "XXXXXXXXXXXXXXXX",
+        "permitIpAddresses": ['127.0.0.2'],
         "covidSafe": true,
     }]
 }
