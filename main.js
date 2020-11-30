@@ -44,13 +44,15 @@ app.get('/users/:userId', (req, res) => {
 	console.log("user id scan");
 	getUser(req.params, res);
 })
-app.post('/users/:userId/loans?', jsonParser, (req, res) => {
+app.get('/users/:userId/loans?', jsonParser, (req, res) => {
 	console.log(req.query.item_barcode)
 	console.log(req.body)
-	requestLoan(req.params, req.query, req.ip, req.body, res)
+	const ipAddress = req.ip.split(":").pop()
+	requestLoan(req.params, req.query, ipAddress, req.body, res)
 })
 app.get('/isCovidSafe', (req, res) => {
-	const { covidSafe } = libraryConfigFromIp(req.ip)
+	const ipAddress = req.ip.split(":").pop()
+	const { covidSafe } = libraryConfigFromIp(ipAddress)
 	res.json({ covidSafe })
 })
 app.listen(port, () => console.log(`Selfcheck has started listening at ${port}`))
