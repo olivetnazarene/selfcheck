@@ -57,14 +57,25 @@ class App extends Component {
 	doLogout() {
 		this.setState(Object.assign({}, INITIAL_STATE))
 	}
-	doCheckoutBook(bookBarcode) {
+	async doCheckoutBook(bookBarcode) {
 		// Allow Logout by scanning barcode
 		if (bookBarcode === this.userBarcode) {
 			return this.doLogout()
 		}
 
+		const checkedOutBarcodes = this.state.booksCheckedOut.map(b => b.barcode)
+		if (checkedOutBarcodes.includes(barcode)) {
+			// Promote Book in List
+			const oldBooksCheckedOut = this.state.booksCheckedOut.slice()
+			const thisBookIndex = oldBooksCheckedOut.findIndex(b => b.barcode === bookBarcode)
+			const thisBook = oldBooksCheckedOut.splice(thisBookIndex, 1)
+			const booksCheckedOut = [thisBook].concat(oldBooksCheckedOut)
+			return this.setState({ booksCheckedOut })
+		}
+
 		// Otherwise, try checking the book out
-		const newBook = checkout({ bookBarcode })
+		const userId = this.state.userId
+		const newBook = await checkout({ bookBarcode, userId })
 		if ("failureMessage" in newBook) {
 			// Error checking out book
 			this.setState({
