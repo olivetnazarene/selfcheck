@@ -4,5 +4,5 @@ const port = window.location.port
 const baseUrl = port ? (protocol + hostname + ":" + port) : (protocol + hostname)
 
 export {
-    baseUrl as baseURL
+    baseUrl
 }

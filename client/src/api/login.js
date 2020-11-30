@@ -1,4 +1,4 @@
-import { baseURL as baseUrl } from './apiConstants'
+import { baseUrl } from './apiConstants'
 
 const loginUrl = userBarcode => `${baseUrl}/users/${userBarcode}`
 
