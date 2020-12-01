@@ -103,12 +103,12 @@ class App extends Component {
 
 	componentDidMount() {
 		this.timerId = window.setInterval(() => {
-			if (this.state.logoutTimeLeft - 1 === 0) {
+			if (this.state.logoutTimeLeft - 0.01 === 0) {
 				this.doLogout()
 			}
-			const newLogoutTimeLeft = this.state.logoutTimeLeft > 1 ? this.state.logoutTimeLeft - 1 : 0
+			const newLogoutTimeLeft = this.state.logoutTimeLeft > 0 ? this.state.logoutTimeLeft - 0.01 : 0
 			this.setState({ logoutTimeLeft: newLogoutTimeLeft })
-		}, 1000)
+		}, 10)
 	}
 	componentWillUnmount() {
 		window.clearInterval(this.timerId)

@@ -43,7 +43,7 @@ const CheckoutLayout = ({ library, organization, userName, userLoans, userReques
 					title={"Fines & Fees"}
 					value={"$" + userFines} />
 				<PillBox
-					value={timeout} />
+					value={Math.round(timeout)} />
 			</div>
 		</div>
 
@@ -63,6 +63,15 @@ const CheckoutLayout = ({ library, organization, userName, userLoans, userReques
 			{/* <!-- Book Table --> */}
 			<div class="flex-auto w-3/4 px-8 mt-2">
 				<BookTable books={books} />
+			</div>
+		</div>
+
+		{/* <!-- Logout progress bar --> */}
+		<div class="absolute w-full bottom-0">
+			<div class="bg-blue-400" style={{ width: (100 - timeout / 60 * 100) + "%" }}>
+				<div class="text-blue-100 uppercase text-sm font-bold px-4 py-1 whitespace-nowrap">
+					Logging out in {Math.round(timeout)} seconds
+				</div>
 			</div>
 		</div>
 	</div>
