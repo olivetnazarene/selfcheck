@@ -108,7 +108,7 @@ class App extends Component {
 
 	componentDidMount() {
 		this.timerId = window.setInterval(() => {
-			if (this.state.logoutTimeLeft - 0.01 === 0) {
+			if (this.state.logoutTimeLeft - 0.01 <= 0) {
 				this.doLogout()
 			}
 			const newLogoutTimeLeft = this.state.logoutTimeLeft > 0 ? this.state.logoutTimeLeft - 0.01 : 0
@@ -128,6 +128,7 @@ class App extends Component {
 				userRequests={this.state.userRequests}
 				userFines={this.state.userFines}
 				timeout={this.state.logoutTimeLeft}
+				timeLimit={LOGOUT_TIME_LIMIT}
 				books={this.state.booksCheckedOut}
 				checkoutBook={this.doCheckoutBook.bind(this)}
 				showAlert={this.state.showCheckoutAlert}
