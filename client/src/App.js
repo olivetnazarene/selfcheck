@@ -51,7 +51,7 @@ class App extends Component {
 				logoutTimeLeft: LOGOUT_TIME_LIMIT,
 				loggedIn: true,
 			})
-			this.userBarcode = userId
+			this.userBarcode = userBarcode
 		}
 	}
 	doLogout() {
