@@ -68,8 +68,10 @@ class App extends Component {
 			// Promote Book in List
 			const oldBooksCheckedOut = this.state.booksCheckedOut.slice()
 			const thisBookIndex = oldBooksCheckedOut.findIndex(b => b.barcode === bookBarcode)
-			const thisBook = oldBooksCheckedOut.splice(thisBookIndex, 1)
-			const booksCheckedOut = [thisBook].concat(oldBooksCheckedOut)
+			// Remember that .splice return an array so we can concat directly
+			const booksCheckedOut = oldBooksCheckedOut
+				.splice(thisBookIndex, 1)
+				.concat(oldBooksCheckedOut)
 			return this.setState({ booksCheckedOut })
 		}
 
