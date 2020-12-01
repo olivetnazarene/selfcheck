@@ -20,7 +20,7 @@ const LoginLayout = ({ backgroundImageUrl, library, organization, login, alertMe
 				</div>
 			</div>
 			<div class="flex-shrink flex-row">
-				<InputBox Icon={IdentificationIcon} onClick={login} />
+				<InputBox Icon={IdentificationIcon} onClick={login} autoFocus={true} />
 			</div>
 			<div class="flex-shrink">
 				<AlertBox visible={showAlert}>

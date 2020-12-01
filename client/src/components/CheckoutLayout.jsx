@@ -52,7 +52,7 @@ const CheckoutLayout = ({ library, organization, userName, userLoans, userReques
 
 			{/* <!-- Barcode Scanner --> */}
 			<div class="flex-shrink w-3/4 mt-20">
-				<InputBox Icon={BookOpenIcon} onClick={checkoutBook} />
+				<InputBox Icon={BookOpenIcon} onClick={checkoutBook} autoFocus={true} />
 			</div>
 
 			{/* <!-- Alert Dialog --> */}
