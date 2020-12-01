@@ -8,7 +8,7 @@ import InputBox from "./InputBox"
 import BookTable from "./BookTable"
 
 
-const CheckoutLayout = ({ library, organization, userName, userLoans, userRequests, userFines, timeout, checkoutBook, books, showAlert, alertMessage }) =>
+const CheckoutLayout = ({ library, organization, userName, userLoans, userRequests, userFines, timeout, timeLimit, checkoutBook, books, showAlert, alertMessage }) =>
 	<div class="h-screen w-screen flex flex-col">
 
 		{/* <!-- Header Bar --> */}
@@ -68,7 +68,7 @@ const CheckoutLayout = ({ library, organization, userName, userLoans, userReques
 
 		{/* <!-- Logout progress bar --> */}
 		<div class="absolute w-full bottom-0">
-			<div class="bg-blue-400" style={{ width: (100 - timeout / 60 * 100) + "%" }}>
+			<div class="bg-blue-400" style={{ width: (100 - timeout / timeLimit * 100) + "%" }}>
 				<div class="text-blue-100 uppercase text-sm font-bold px-4 py-1 whitespace-nowrap">
 					Logging out in {Math.round(timeout)} seconds
 				</div>
