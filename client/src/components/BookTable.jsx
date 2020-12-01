@@ -10,7 +10,7 @@ const BookTable = ({ books }) => books.length === 0 ? null :
             {books.map(b =>
                 <tr key={b.barcode} class="border-b border-gray-400">
                     <td class="p-2 text-gray-500 text-xs">{b.dueDate}</td>
-                    <td class="p-2">{b.bookString}</td>
+                    <td class="p-2 truncate">{b.bookString}</td>
                 </tr>
             )}
         </tbody>
