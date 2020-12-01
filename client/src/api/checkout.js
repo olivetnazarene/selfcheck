@@ -19,7 +19,7 @@ async function checkout({ bookBarcode, userId }) {
                 console.log("Loan Error")
                 console.log(book)
                 return {
-                    failureMessage: book.error + ".<br/>Please see the circulation desk for more information."
+                    failureMessage: book.error + ". Please see the circulation desk for more information."
                 }
             }
             else {
