@@ -72,7 +72,12 @@ class App extends Component {
 			const booksCheckedOut = oldBooksCheckedOut
 				.splice(thisBookIndex, 1)
 				.concat(oldBooksCheckedOut)
-			return this.setState({ booksCheckedOut })
+			// Pretend to have successfully checked out a book
+			return this.setState({
+				logoutTimeLeft: LOGOUT_TIME_LIMIT,
+				showCheckoutAlert: false,
+				booksCheckedOut,
+			})
 		}
 
 		// Otherwise, try checking the book out
