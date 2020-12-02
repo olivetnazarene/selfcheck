@@ -6,6 +6,7 @@ import './tailwind.output.css'
 import LoginLayout from "./components/LoginLayout"
 import CheckoutLayout from './components/CheckoutLayout';
 
+import whoami from "./api/whoami"
 import login from "./api/login"
 import checkout from "./api/checkout"
 
@@ -13,7 +14,7 @@ const LOGIN_ALERT_TIMEOUT_SECONDS = 10
 const CHECKOUT_ALERT_TIMEOUT_SECONDS = 2
 const LOGOUT_TIME_LIMIT = 60
 
-const INITIAL_STATE = {
+const LOGGED_OUT_STATE = {
 	loggedIn: false,
 	userName: "",
 	userLoans: 0,
@@ -32,7 +33,12 @@ class App extends Component {
 	userBarcode = null
 	constructor(props) {
 		super(props)
-		this.state = Object.assign({}, INITIAL_STATE)
+		this.state = Object.assign({
+			loading: true,
+			libraryName: "",
+			organizationName: "",
+			featureImage: "",
+		}, LOGGED_OUT_STATE)
 	}
 	async doLogin(userBarcode) {
 		const newUser = await login({ userBarcode })
@@ -55,7 +61,7 @@ class App extends Component {
 		}
 	}
 	doLogout() {
-		this.setState(Object.assign({}, INITIAL_STATE))
+		this.setState(Object.assign({}, LOGGED_OUT_STATE))
 	}
 	async doCheckoutBook(bookBarcode) {
 		// Allow Logout by scanning barcode
@@ -107,6 +113,24 @@ class App extends Component {
 
 
 	componentDidMount() {
+		console.log(this.state.loading)
+		const selfDetails = whoami()
+		selfDetails.then(json => {
+			if ("failureMessage" in json) {
+				console.error(json)
+				return
+			}
+			else {
+				const { libraryName, organizationName, featureImage } = json
+				this.setState({
+					loading: false,
+					libraryName,
+					organizationName,
+					featureImage
+				})
+			}
+		})
+
 		this.timerId = window.setInterval(() => {
 			if (this.state.logoutTimeLeft - 0.01 <= 0) {
 				this.doLogout()
@@ -119,10 +143,14 @@ class App extends Component {
 		window.clearInterval(this.timerId)
 	}
 	render() {
-		if (this.state.loggedIn) {
+		if (this.state.loading) {
+			// return <LoadingLayout />
+			return <div>Loading</div>
+		}
+		else if (this.state.loggedIn) {
 			return <CheckoutLayout
-				library="Buswell Library"
-				organization="Wheaton College"
+				library={this.state.libraryName}
+				organization={this.state.organizationName}
 				userName={this.state.userName}
 				userLoans={this.state.userLoans}
 				userRequests={this.state.userRequests}
@@ -137,9 +165,9 @@ class App extends Component {
 		}
 		else {
 			return <LoginLayout
-				backgroundImageUrl={"blanchard.jpg"}
-				library="Buswell Library"
-				organization="Wheaton College"
+				backgroundImageUrl={this.state.featureImage}
+				library={this.state.libraryName}
+				organization={this.state.organizationName}
 				login={this.doLogin.bind(this)}
 				showAlert={this.state.showLoginAlert}
 				alertMessage={this.state.loginAlertMessage}

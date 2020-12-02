@@ -9,7 +9,6 @@ module.exports = {
         "apiLibraryName": "XXXXX",
         "apiCircDesk": "XXXXXXXXXXXXXXXX",
         "permitIpAddresses": ['127.0.0.1'],
-        "covidSafe": true,
     }, {
         "featureImage": "url/to/image.jpg",
         "libraryNameString": "Friendly Library Name",
@@ -17,6 +16,5 @@ module.exports = {
         "apiLibraryName": "XXXXX",
         "apiCircDesk": "XXXXXXXXXXXXXXXX",
         "permitIpAddresses": ['127.0.0.2'],
-        "covidSafe": true,
     }]
 }

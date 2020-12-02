@@ -50,10 +50,26 @@ app.get('/users/:userId/loans?', jsonParser, (req, res) => {
 	const ipAddress = req.ip.split(":").pop()
 	requestLoan(req.params, req.query, ipAddress, req.body, res)
 })
-app.get('/isCovidSafe', (req, res) => {
+app.get('/whoami', (req, res) => {
 	const ipAddress = req.ip.split(":").pop()
-	const { covidSafe } = libraryConfigFromIp(ipAddress)
-	res.json({ covidSafe })
+	const conf = libraryConfigFromIp(ipAddress)
+	if (!conf) {
+		res.json({ error: "Sorry, we could not find a circulation desk for your ip address." })
+	}
+	// Pass the config details we intend to pass back (not just everything in that object)
+	const { featureImageUrl: featureImage,
+		libraryNameString: libraryName,
+		organizationNameString: organizationName } = conf
+	if (!featureImage || !libraryName || !organizationName) {
+		res.json({
+			error: "Sorry, your circulation desk is missing configuration details"
+		})
+	}
+	res.json({
+		featureImage,
+		libraryName,
+		organizationName
+	})
 })
 app.listen(port, () => console.log(`Selfcheck has started listening at ${port}`))
 
