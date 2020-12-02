@@ -42,8 +42,6 @@ const CheckoutLayout = ({ library, organization, userName, userLoans, userReques
 				<PillBox
 					title={"Fines & Fees"}
 					value={"$" + userFines} />
-				<PillBox
-					value={Math.round(timeout)} />
 			</div>
 		</div>
 
