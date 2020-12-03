@@ -163,8 +163,9 @@ class App extends Component {
 			/>
 		}
 		else {
+			const hasFeatureImage = !!this.state.featureImage && this.state.featureImage != "url/to/image.jpg"
 			return <LoginLayout
-				backgroundImageUrl={this.state.featureImage}
+				backgroundImageUrl={hasFeatureImage ? this.state.featureImage : false}
 				library={this.state.libraryName}
 				organization={this.state.organizationName}
 				login={this.doLogin.bind(this)}

@@ -72,7 +72,7 @@ app.get('/whoami', (req, res) => {
 	const { featureImageUrl: featureImage,
 		libraryNameString: libraryName,
 		organizationNameString: organizationName } = conf
-	if (!featureImage || !libraryName || !organizationName) {
+	if (!libraryName || !organizationName) {
 		return res.json({
 			error: "Sorry, your circulation desk is missing configuration details"
 		})

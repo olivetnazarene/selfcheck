@@ -4,12 +4,12 @@ import { IdentificationIcon } from "./Icons"
 
 const LoginLayout = ({ backgroundImageUrl, library, organization, login, alertMessage, showAlert }) =>
 	<div class="h-screen w-screen flex flex-row">
-		<div class="flex-auto bg-blue-100 text-gray-200"
+		{backgroundImageUrl && <div class="flex-auto bg-blue-100 text-gray-200"
 			style={{
 				background: `url(${backgroundImageUrl}) center center`,
 				backgroundSize: "cover"
 			}}
-		/>
+		/>}
 		<div class="flex-auto bg-gray-200 flex flex-col justify-center items-center">
 			<div class="mb-16 text-center">
 				<div class="font-light text-3xl">
