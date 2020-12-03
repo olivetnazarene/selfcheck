@@ -25,7 +25,7 @@ class InputBox extends Component {
 				</div>
 				<input ref={this.textInput}
 					class="text-2xl bg-transparent outline-none flex-grow"
-					placeholder=" Scan your barcode"
+					placeholder={" " + this.props.placeholder}
 					onKeyPress={key => {
 						if (key.key === "Enter") {
 							this.onClick()
