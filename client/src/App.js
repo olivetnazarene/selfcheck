@@ -113,7 +113,6 @@ class App extends Component {
 
 
 	componentDidMount() {
-		console.log(this.state.loading)
 		const selfDetails = whoami()
 		selfDetails.then(json => {
 			if ("failureMessage" in json) {
