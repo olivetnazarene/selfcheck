@@ -16,10 +16,11 @@ const port = process.env.NODE_PORT || 3000;
 // Setup API settings
 // 
 const config = require('./config')
+let all_ip_set
 // ensure that the venn diagram of ips does not have intersections
 {
 	const all_ip_array = [].concat(...config.locations.map(l => l.permitIpAddresses))
-	const all_ip_set = new Set(all_ip_array)
+	all_ip_set = new Set(all_ip_array)
 	if (all_ip_array.length !== all_ip_set.size) {
 		throw ("Multiple locations are configured with the same ip address but that's not allowed")
 	}
@@ -34,8 +35,16 @@ const config = require('./config')
 }
 
 app.set('trust proxy', true)
-const libraryConfigFromIp = ip =>
-	config.locations.find(location => location.permitIpAddresses.includes(ip))
+const libraryConfigFromIp = ip => {
+	if (!all_ip_set.has(ip)) {
+		return {
+			failureMessage: `Could not find your ip (${ip}) in permitIpAddresses for any location`
+		}
+	}
+	else {
+		config.locations.find(location => location.permitIpAddresses.includes(ip))
+	}
+}
 // 
 // Routes
 // 
@@ -53,8 +62,11 @@ app.get('/users/:userId/loans?', jsonParser, (req, res) => {
 app.get('/whoami', (req, res) => {
 	const ipAddress = req.ip.split(":").pop()
 	const conf = libraryConfigFromIp(ipAddress)
-	if (!conf) {
-		return res.json({ error: "Sorry, we could not find a circulation desk for your ip address." })
+	if ("failureMessage" in conf) {
+		return res.json({
+			error: "Sorry, we could not find a circulation desk for your ip address.",
+			message: conf.failureMessage
+		})
 	}
 	// Pass the config details we intend to pass back (not just everything in that object)
 	const { featureImageUrl: featureImage,
