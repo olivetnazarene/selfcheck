@@ -10,7 +10,7 @@ This version supports touch free interactions by utilizing a barcode scanner on 
 
 ## Install
 
-1. Run `git clone https://github.com/wc-library` to clone the repository to your machine.
+1. Clone the repository to your machine.
 2. Run `npm install` in the cloned directory.
 3. Copy `example_config.js` to `config.js` and update the values to match.
 4. Set your node env port if you don't want it to run on 3000 (recommended)

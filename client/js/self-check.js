@@ -52,6 +52,7 @@ async function initiate() {
 var modal;
 var span;
 var user;
+var sessionScans = []
 var sessiontimer;
 var defaultTimeout = 60
 
@@ -130,42 +131,67 @@ function loaduser(data) {
 	alert(data);
 }
 
+const tableRow = ({ barcode, title, dueDate }) => `<tr id='b_${barcode}'><td>${title}</td><td>${dueDate}</td></tr>`
+const prependBookToTable = ({ barcode, title, dueDate }) => {
+	$("#loanstable tbody").innerHTML = tableRow({ barcode, title, dueDate }) +
+		$("#loanstable tbody").innerHTML
+}
+const promoteBookInTable = ({ barcode }) => {
+	const $row = $(`tr#b_${barcode}`)
+	const rowHTML = $row.outerHTML
+	$row.remove()
+	$("#loanstable tbody").innerHTML = rowHTML + $("#loanstable tbody").innerHTML
+}
 function loan() {
 	let barcode = $("#barcode").value
+	console.log($("#barcode").value)
+
 	if ((barcode != null) && (barcode != "")) {
 		if (barcode == user.user_identifier[0].value || barcode == user.primary_id) {
 			console.log("Re-scanned userid, logging out")
 			logout();
 			return
 		}
-		console.log($("#barcode").value)
-		$("#modalheader").textContent = "Processing request, please wait..."
-		hide($("#modalclosex"))
-		show($("#myModal"))
-		$("#barcode").disabled = true
 
-		fetch(baseURL + "/users/" + user.primary_id + "/loans?item_barcode=" + $("#barcode").value, {
-			method: "POST",
-		}).then(r => r.json())
-			.then((data) => {
-				if ("error" in data && data.error) {
-					console.log("Loan Error")
-					console.log(data)
-					showLoanError(data.error + ".<br/><br/>Please see the circulation desk for more information.<br/><br/><input class='modalclosemain' type='button' value='close [6]' id='barcodeerrorbutton' onclick='javascript:returnToBarcode();'/>")
-				}
-				else {
-					let dueDate = new Date(data.due_date)
-					let dueDateText = (parseInt(dueDate.getMonth()) + 1) + "/" + dueDate.getDate() + "/" + dueDate.getFullYear();
-					$("#loanstable tbody").innerHTML = $("#loanstable tbody").innerHTML + "<tr><td>" + data.title + "</td><td>" + dueDateText + "</td></tr>"
-					returnToBarcode()
-				}
-			}).catch((error) => {
-				console.error("Query Error")
-				console.error(error)
-				showLoanError("Item not available for loan.<br/><br/>Please see the circulation desk for more information.<br/><br/><input class='modalclosemain' type='button' value='close [6]' id='barcodeerrorbutton' onclick='javascript:returnToBarcode();'/>")
-			}).finally(() => {
-				extendTimeout()
-			})
+		if (sessionScans.includes(barcode)) {
+			promoteBookInTable({ barcode })
+			returnToBarcode()
+			extendTimeout()
+		}
+		else {
+			$("#modalheader").textContent = "Processing request, please wait..."
+			hide($("#modalclosex"))
+			show($("#myModal"))
+			$("#barcode").disabled = true
+
+			fetch(baseURL + "/users/" + user.primary_id + "/loans?item_barcode=" + $("#barcode").value, {
+				method: "POST",
+			}).then(r => r.json())
+				.then((data) => {
+					if ("error" in data && data.error) {
+						console.log("Loan Error")
+						console.log(data)
+						showLoanError(data.error + ".<br/><br/>Please see the circulation desk for more information.<br/><br/><input class='modalclosemain' type='button' value='close [6]' id='barcodeerrorbutton' onclick='javascript:returnToBarcode();'/>")
+					}
+					else {
+						let dueDate = new Date(data.due_date)
+						let dueDateText = (parseInt(dueDate.getMonth()) + 1) + "/" + dueDate.getDate() + "/" + dueDate.getFullYear();
+						prependBookToTable({
+							barcode,
+							title: data.title,
+							dueDate: dueDateText
+						})
+						sessionScans.push(barcode)
+						returnToBarcode()
+					}
+				}).catch((error) => {
+					console.error("Query Error")
+					console.error(error)
+					showLoanError("Item not available for loan.<br/><br/>Please see the circulation desk for more information.<br/><br/><input class='modalclosemain' type='button' value='close [6]' id='barcodeerrorbutton' onclick='javascript:returnToBarcode();'/>")
+				}).finally(() => {
+					extendTimeout()
+				})
+		}
 	}
 }
 const showLoanError = message => {
@@ -226,6 +252,7 @@ function extendTimeout() {
 
 function logout() {
 	sessiontimer = null
+	sessionScans = []
 	user = {}
 	show($("#loginbox"))
 	$("#userid").focus()
