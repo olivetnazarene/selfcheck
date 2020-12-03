@@ -27,9 +27,9 @@ let all_ip_set
 }
 // ensure that circ desks have different names
 {
-	const circDeskNames_array = config.locations.map(l => l.apiCircDesk)
-	const circDeskNames_set = new Set(circDeskNames_array)
-	if (circDeskNames_array.length !== circDeskNames_set.size) {
+	const circDeskAndLibraryNames_array = config.locations.map(l => l.apiLibraryName + "_" + l.apiCircDesk)
+	const circDeskAndLibraryNames_set = new Set(circDeskAndLibraryNames_array)
+	if (circDeskAndLibraryNames_array.length !== circDeskAndLibraryNames_set.size) {
 		throw ("Multiple locations are configured with the same name but that's not allowed")
 	}
 }
