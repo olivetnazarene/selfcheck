@@ -19,7 +19,7 @@ class InputBox extends Component {
 	render() {
 		const { Icon } = this.props
 		return (
-			<div class="flex bg-gray-100 rounded-lg border-blue-400 border-4" >
+			<div class="flex bg-gray-50 rounded-lg border-blue-400 border-4" >
 				<div class="flex-none flex items-center m-5">
 					<Icon classes={"w-8 h-8"} />
 				</div>
