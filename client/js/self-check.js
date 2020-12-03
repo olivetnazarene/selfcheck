@@ -155,6 +155,8 @@ function loan() {
 
 		if (sessionScans.includes(barcode)) {
 			promoteBookInTable({ barcode })
+			returnToBarcode()
+			extendTimeout()
 		}
 		else {
 			$("#modalheader").textContent = "Processing request, please wait..."
