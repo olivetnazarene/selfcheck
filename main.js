@@ -54,18 +54,18 @@ app.get('/whoami', (req, res) => {
 	const ipAddress = req.ip.split(":").pop()
 	const conf = libraryConfigFromIp(ipAddress)
 	if (!conf) {
-		res.json({ error: "Sorry, we could not find a circulation desk for your ip address." })
+		return res.json({ error: "Sorry, we could not find a circulation desk for your ip address." })
 	}
 	// Pass the config details we intend to pass back (not just everything in that object)
 	const { featureImageUrl: featureImage,
 		libraryNameString: libraryName,
 		organizationNameString: organizationName } = conf
 	if (!featureImage || !libraryName || !organizationName) {
-		res.json({
+		return res.json({
 			error: "Sorry, your circulation desk is missing configuration details"
 		})
 	}
-	res.json({
+	return res.json({
 		featureImage,
 		libraryName,
 		organizationName
@@ -76,13 +76,11 @@ app.listen(port, () => console.log(`Selfcheck has started listening at ${port}`)
 async function getUser(params, res) {
 	console.log(`Retrieving user with id ${params.userId}.`)
 
-	let u = await get_api_user(params.userId)
-
-	if (u) {
-		res.json(u)
-	} else {
-		res.json({ error: 'something went wrong with the lookup' })
+	let user = await get_api_user(params.userId)
+	if (!user) {
+		return res.json({ error: 'something went wrong with the lookup' })
 	}
+	res.json(user)
 }
 
 async function requestLoan(params, query, ip, body, res) {
@@ -93,16 +91,15 @@ async function requestLoan(params, query, ip, body, res) {
 
 	if (loan.error) {
 		console.log("API returned with error")
-		res.json({ error: loan.error[0].errorMessage })
+		return res.json({ error: loan.error[0].errorMessage })
 	} else if (loan) {
 		console.log("successfully loaned book to user")
 		console.log(loan)
-		res.json(loan)
+		return res.json(loan)
 	} else {
 		console.log("No error from API but something else went wrong")
-		res.json({ error: 'something went wrong with the lookup' })
+		return res.json({ error: 'something went wrong with the lookup' })
 	}
-
 }
 // 
 // API calls
