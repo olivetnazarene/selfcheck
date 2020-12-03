@@ -42,7 +42,7 @@ const libraryConfigFromIp = ip => {
 		}
 	}
 	else {
-		config.locations.find(location => location.permitIpAddresses.includes(ip))
+		return config.locations.find(location => location.permitIpAddresses.includes(ip))
 	}
 }
 // 
