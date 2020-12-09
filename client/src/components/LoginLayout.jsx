@@ -34,7 +34,7 @@ const LoginLayout = ({ backgroundImageUrl, libraryLogo, library, organization, l
 			</div>
 			<div class="flex-grow flex flex-col justify-end w-full">
 				<div class="w-full bg-white flex flex-row justify-center">
-					<img src={libraryLogo} class="max-h-32" />
+					<img src={libraryLogo} class="max-h-32" alt={`${library} at ${organization} logo`} />
 				</div>
 			</div>
 		</div>
