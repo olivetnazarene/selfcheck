@@ -68,15 +68,18 @@ app.get('/whoami', (req, res) => {
 		})
 	}
 	// Pass the config details we intend to pass back (not just everything in that object)
-	const { featureImageUrl: featureImage,
+	const {
+		libraryLogoUrl: libraryLogo,
+		featureImageUrl: featureImage,
 		libraryNameString: libraryName,
-		organizationNameString: organizationName } = conf
+		organizationNameString: organizationName} = conf
 	if (!libraryName || !organizationName) {
 		return res.json({
 			error: "Sorry, your circulation desk is missing configuration details"
 		})
 	}
 	return res.json({
+		libraryLogo,
 		featureImage,
 		libraryName,
 		organizationName
@@ -89,7 +92,7 @@ async function getUser(params, res) {
 
 	let user = await get_api_user(params.userId)
 	if (!user) {
-		return res.json({ error: 'something went wrong with the lookup' })
+		return res.json({error: 'something went wrong with the lookup'})
 	}
 	res.json(user)
 }
@@ -102,14 +105,14 @@ async function requestLoan(params, query, ip, body, res) {
 
 	if (loan.error) {
 		console.log("API returned with error")
-		return res.json({ error: loan.error[0].errorMessage })
+		return res.json({error: loan.error[0].errorMessage})
 	} else if (loan) {
 		console.log("successfully loaned book to user")
 		console.log(loan)
 		return res.json(loan)
 	} else {
 		console.log("No error from API but something else went wrong")
-		return res.json({ error: 'something went wrong with the lookup' })
+		return res.json({error: 'something went wrong with the lookup'})
 	}
 }
 // 
@@ -142,7 +145,7 @@ function get_api_user(id) {
 }
 
 function api_request_loan(userid, ip, barcode) {
-	const { apiCircDesk, apiLibraryName } = libraryConfigFromIp(ip)
+	const {apiCircDesk, apiLibraryName} = libraryConfigFromIp(ip)
 	const library_xml = `<?xml version='1.0' encoding='UTF-8'?><item_loan><circ_desk>${apiCircDesk}</circ_desk><library>${apiLibraryName}</library></item_loan>`
 	const options = {
 		baseURL: config.hostname,
