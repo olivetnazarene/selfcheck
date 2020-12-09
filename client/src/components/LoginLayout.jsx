@@ -2,16 +2,16 @@ import InputBox from './InputBox'
 import AlertBox from './AlertBox'
 import { IdentificationIcon } from "./Icons"
 
-const LoginLayout = ({ backgroundImageUrl, library, organization, login, alertMessage, showAlert }) =>
+const LoginLayout = ({ backgroundImageUrl, libraryLogo, library, organization, login, alertMessage, showAlert }) =>
 	<div class="h-screen w-screen flex flex-row">
-		{backgroundImageUrl && <div class="flex-auto bg-blue-100 text-gray-200"
+		{backgroundImageUrl && <div class="lg:flex-auto bg-blue-100 text-gray-200"
 			style={{
 				background: `url(${backgroundImageUrl}) center center`,
 				backgroundSize: "cover"
 			}}
 		/>}
 		<div class="flex-auto bg-gray-200 flex flex-col justify-center items-center">
-			<div class="mb-16 text-center">
+			<div class="flex-grow flex flex-col justify-end mb-8 text-center">
 				<div class="font-light text-3xl">
 					Self-Checkout for {library}
 				</div>
@@ -19,6 +19,7 @@ const LoginLayout = ({ backgroundImageUrl, library, organization, login, alertMe
 					{organization}
 				</div>
 			</div>
+
 			<div class="flex-shrink flex-row">
 				<InputBox
 					placeholder={"Scan your ID"}
@@ -31,7 +32,12 @@ const LoginLayout = ({ backgroundImageUrl, library, organization, login, alertMe
 					{alertMessage}
 				</AlertBox>
 			</div>
+			<div class="flex-grow flex flex-col justify-end w-full">
+				<div class="w-full bg-white flex flex-row justify-center">
+					<img src={libraryLogo} class="max-h-32" />
+				</div>
+			</div>
 		</div>
-	</div>
+	</div >
 
 export default LoginLayout

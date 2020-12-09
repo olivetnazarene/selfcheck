@@ -120,9 +120,10 @@ class App extends Component {
 				return
 			}
 			else {
-				const { libraryName, organizationName, featureImage } = json
+				const { libraryLogo, libraryName, organizationName, featureImage } = json
 				this.setState({
 					loading: false,
+					libraryLogo,
 					libraryName,
 					organizationName,
 					featureImage
@@ -148,6 +149,7 @@ class App extends Component {
 		}
 		else if (this.state.loggedIn) {
 			return <CheckoutLayout
+				libraryLogo={this.state.libraryLogo}
 				library={this.state.libraryName}
 				organization={this.state.organizationName}
 				userName={this.state.userName}
@@ -163,8 +165,9 @@ class App extends Component {
 			/>
 		}
 		else {
-			const hasFeatureImage = !!this.state.featureImage && this.state.featureImage != "url/to/image.jpg"
+			const hasFeatureImage = !!this.state.featureImage && this.state.featureImage !== "url/to/image.jpg"
 			return <LoginLayout
+				libraryLogo={this.state.libraryLogo}
 				backgroundImageUrl={hasFeatureImage ? this.state.featureImage : false}
 				library={this.state.libraryName}
 				organization={this.state.organizationName}

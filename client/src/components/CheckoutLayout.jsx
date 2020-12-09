@@ -8,19 +8,21 @@ import InputBox from "./InputBox"
 import BookTable from "./BookTable"
 
 
-const CheckoutLayout = ({ library, organization, userName, userLoans, userRequests, userFines, timeout, timeLimit, checkoutBook, books, showAlert, alertMessage }) =>
-	<div class="h-screen w-screen flex flex-col">
+const CheckoutLayout = ({ libraryLogo, library, organization, userName, userLoans, userRequests, userFines, timeout, timeLimit, checkoutBook, books, showAlert, alertMessage }) =>
+	<div class="h-screen w-screen flex flex-col bg-gray-200">
 
 		{/* <!-- Header Bar --> */}
 		<div class="flex-shrink bg-blue-400 flex content-between items-center p-2 shadow-md" style={{ zIndex: 1 }}>
 
 			{/* <!-- Library Name --> */}
 			<div class="flex-auto text-gray-100 m-2">
-				<div class="font-light text-2xl">
-					{library}
-				</div>
-				<div class="font-extrabold text-sm uppercase">
-					{organization}
+				<div class="flex flex-col">
+					<div class="font-light text-2xl">
+						{library}
+					</div>
+					<div class="font-extrabold text-sm uppercase">
+						{organization}
+					</div>
 				</div>
 			</div>
 
@@ -46,7 +48,7 @@ const CheckoutLayout = ({ library, organization, userName, userLoans, userReques
 		</div>
 
 		{/* <!-- Main Content --> */}
-		<div class="flex-auto bg-gray-200 flex flex-col justify-center items-center">
+		<div class="flex-auto flex flex-col justify-center items-center">
 
 			{/* <!-- Barcode Scanner --> */}
 			<div class="flex-shrink w-3/4 mt-20">
@@ -63,13 +65,16 @@ const CheckoutLayout = ({ library, organization, userName, userLoans, userReques
 			</AlertBox>
 
 			{/* <!-- Book Table --> */}
-			<div class="flex-auto w-3/4 px-8 mt-2">
-				<BookTable books={books} />
+			<div class="flex-auto w-3/4 px-8 mt-2 z-10">
+				<BookTable books={books} rowLimit={5} />
 			</div>
 		</div>
 
 		{/* <!-- Logout progress bar --> */}
-		<div class="absolute w-full bottom-0">
+		<div class="fixed w-full bottom-0 bg-white">
+			<div class="w-full bg-white flex flex-row justify-center pt-2">
+				<img src={libraryLogo} class="h-24 z-0" />
+			</div>
 			<div class="bg-blue-400" style={{ width: (100 - timeout / timeLimit * 100) + "%" }}>
 				<div class="text-blue-100 uppercase text-sm font-bold px-4 py-1 whitespace-nowrap">
 					Logging out in {Math.round(timeout)} seconds
