@@ -3,6 +3,7 @@ module.exports = {
     "hostname": "https://api-na.hosted.exlibrisgroup.com",
     "apiKey": "XXXXXXXXXXXXXXXXXXXX",
     "locations": [{
+        "libraryLogoUrl": "url/to/image.jpg",
         "featureImageUrl": "url/to/image.jpg",
         "libraryNameString": "Friendly Library Name",
         "organizationNameString": "Friendly Organization Name",
@@ -10,6 +11,7 @@ module.exports = {
         "apiCircDesk": "XXXXXXXXXXXXXXXX",
         "permitIpAddresses": ['127.0.0.1'],
     }, {
+        "libraryLogoUrl": "url/to/image.jpg",
         "featureImageUrl": "url/to/image.jpg",
         "libraryNameString": "Friendly Library Name",
         "organizationNameString": "Friendly Organization Name",
