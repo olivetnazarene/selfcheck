@@ -34,3 +34,13 @@ Once you have completed the installation steps:
 ```
 node main.js
 ```
+
+## Development
+
+To get the benefits of hot reloading that come with create-react-app, this workflow works:
+
+1. Modify `client/src/api/apiConstants.js` so that port is hardcoded to 3000 (never push this change).
+1. Run `node main.js` (now listening on 3000).
+1. In `/client`, instead of `npm run build`, run `npm start`. This will probably try to host on port 3000 and ask if you'd like to use a different port. Choose yes (it will probably host on 3001).
+
+Now, http://localhost:3001 is the create-react-app webpack hosted version of the client (it's not being served by the server). This means that client side code updates hot-reload and server requests continue working (because you hardcoded the port and started the server to begin with).
