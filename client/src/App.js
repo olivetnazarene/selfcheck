@@ -125,10 +125,10 @@ class App extends Component {
 				const libraryLogoNotDefault = libraryLogo === "url/to/image.jpg" ? null : libraryLogo
 				this.setState({
 					loading: false,
-					libraryLogoNotDefault,
+					libraryLogo: libraryLogoNotDefault,
 					libraryName,
 					organizationName,
-					featureImageNotDefault
+					featureImage: featureImageNotDefault
 				})
 			}
 		})
