@@ -31,9 +31,9 @@ class InputBox extends Component {
 							this.onClick()
 						}
 					}} />
-				<a onClick={this.onClick.bind(this)} href="#" class="flex-none flex items-center m-2 p-2 rounded cursor-pointer bg-blue-400 text-gray-200 hover:bg-blue-500 hover:text-white hover:shadow-md active:bg-blue-600">
+				<button onClick={this.onClick.bind(this)} href="#" class="flex-none flex items-center m-2 p-2 rounded cursor-pointer bg-blue-400 text-gray-200 hover:bg-blue-500 hover:text-white hover:shadow-md active:bg-blue-600">
 					<ArrowCircleLeftIcon classes="w-10 h-10" />
-				</a>
+				</button>
 			</div>
 		)
 	}
