@@ -145,7 +145,18 @@ function get_api_user(id) {
 }
 
 function api_request_loan(userid, ip, barcode) {
-	const {apiCircDesk, apiLibraryName} = libraryConfigFromIp(ip)
+	const { apiCircDesk, apiLibraryName, failureMessage } = libraryConfigFromIp(ip)
+	if (failureMessage) {
+		// api_request_loan should return a promise so this is a promise that resolves to an error
+		return new Promise((resolve, reject) => {
+			resolve({
+				error: [{
+					message: "Sorry, we could not find a circulation desk for your ip address."
+				}],
+			})
+		})
+	}
+
 	const library_xml = `<?xml version='1.0' encoding='UTF-8'?><item_loan><circ_desk>${apiCircDesk}</circ_desk><library>${apiLibraryName}</library></item_loan>`
 	const options = {
 		baseURL: config.hostname,
