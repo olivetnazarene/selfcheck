@@ -72,7 +72,7 @@ app.get('/whoami', (req, res) => {
 		libraryLogoUrl: libraryLogo,
 		featureImageUrl: featureImage,
 		libraryNameString: libraryName,
-		organizationNameString: organizationName} = conf
+		organizationNameString: organizationName } = conf
 	if (!libraryName || !organizationName) {
 		return res.json({
 			error: "Sorry, your circulation desk is missing configuration details"
@@ -92,7 +92,7 @@ async function getUser(params, res) {
 
 	let user = await get_api_user(params.userId)
 	if (!user) {
-		return res.json({error: 'something went wrong with the lookup'})
+		return res.json({ error: 'something went wrong with the lookup' })
 	}
 	res.json(user)
 }
@@ -105,14 +105,14 @@ async function requestLoan(params, query, ip, body, res) {
 
 	if (loan.error) {
 		console.log("API returned with error")
-		return res.json({error: loan.error[0].errorMessage})
+		return res.json({ error: loan.error[0].errorMessage })
 	} else if (loan) {
 		console.log("successfully loaned book to user")
 		console.log(loan)
 		return res.json(loan)
 	} else {
 		console.log("No error from API but something else went wrong")
-		return res.json({error: 'something went wrong with the lookup'})
+		return res.json({ error: 'something went wrong with the lookup' })
 	}
 }
 // 
