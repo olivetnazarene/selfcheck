@@ -76,10 +76,12 @@ const CheckoutLayout = ({ libraryLogo, library, organization, userName, userLoan
 		</div>
 
 		{/* <!-- Logout progress bar --> */}
-		<div class="fixed w-full bottom-0 bg-white">
-			<div class="w-full bg-white flex flex-row justify-center pt-2">
-				<img src={libraryLogo} class="h-24 z-0" alt={`${library} at ${organization} logo`} />
-			</div>
+		<div class={"fixed w-full bottom-0" + (libraryLogo ? " bg-white" : "")}>
+			{libraryLogo && (
+				<div class="w-full bg-white flex flex-row justify-center pt-2">
+					<img src={libraryLogo} class="h-24 z-0" alt={`${library} at ${organization} logo`} />
+				</div>
+			)}
 			<div class="bg-blue-400" style={{ width: (100 - timeout / timeLimit * 100) + "%" }}>
 				<div class="text-blue-100 uppercase text-sm font-bold px-4 py-1 whitespace-nowrap">
 					Logging out in {Math.round(timeout)} seconds
