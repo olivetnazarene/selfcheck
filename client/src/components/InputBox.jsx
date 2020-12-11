@@ -15,6 +15,7 @@ class InputBox extends Component {
 		const value = this.textInput.current.value
 		this.props.onClick(value)
 		this.textInput.current.value = ""
+		this.textInput.current.focus()
 	}
 	render() {
 		const { Icon } = this.props
