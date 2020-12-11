@@ -2,7 +2,7 @@
 
 Alma Self-Checkout application (fork) that can run in a contact-free environment (using a scanner).
 
-![screenshot](https://user-images.githubusercontent.com/4253884/101932940-1d2a0a80-3ba1-11eb-81e6-bc446c859934.png)
+![screenshot](https://user-images.githubusercontent.com/4253884/101934461-3cc23280-3ba3-11eb-8edc-beb6bbe9e80a.png)
 
 ## About
 
