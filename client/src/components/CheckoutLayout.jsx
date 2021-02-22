@@ -7,6 +7,12 @@ import AlertBox from "./AlertBox"
 import InputBox from "./InputBox"
 import BookTable from "./BookTable"
 
+const LogoutInstruction = () => (
+	<div class="text-center text-2xl font-bold text-gray-400 opacity-50">
+		To log out, scan your ID again.
+	</div>
+)
+
 // This is the rgb value for tailwind's bg-blue-200 but with alpha
 // for the booktable if it expands into the white logo area
 const bg_blue_200_alpha_80 = "rgba(226, 232, 240, 0.8)"
@@ -70,6 +76,7 @@ const CheckoutLayout = ({ libraryLogo, library, organization, userName, userLoan
 			{/* <!-- Book Table --> */}
 			<div class="flex-auto w-3/4 px-8 mt-2 z-10">
 				<div class="p-5 rounded" style={{ background: bg_blue_200_alpha_80 }}>
+					{books.length === 0 ? <LogoutInstruction /> : null}
 					<BookTable books={books} rowLimit={5} />
 				</div>
 			</div>
