@@ -3,7 +3,6 @@
 // 
 const express = require('express')
 const axios = require('axios')
-const fs = require('fs')
 const bodyParser = require('body-parser')
 
 // 
@@ -15,23 +14,75 @@ const port = process.env.NODE_PORT || 3000;
 // 
 // Setup API settings
 // 
-const config = require('./config');
+const config = require('./config')
+let all_ip_set
+// ensure that the venn diagram of ips does not have intersections
+{
+	const all_ip_array = [].concat(...config.locations.map(l => l.permitIpAddresses))
+	all_ip_set = new Set(all_ip_array)
+	if (all_ip_array.length !== all_ip_set.size) {
+		throw ("Multiple locations are configured with the same ip address but that's not allowed")
+	}
+}
+// ensure that circ desks have different names
+{
+	const circDeskAndLibraryNames_array = config.locations.map(l => l.apiLibraryName + "_" + l.apiCircDesk)
+	const circDeskAndLibraryNames_set = new Set(circDeskAndLibraryNames_array)
+	if (circDeskAndLibraryNames_array.length !== circDeskAndLibraryNames_set.size) {
+		throw ("Multiple locations are configured with the same name but that's not allowed")
+	}
+}
+
+app.set('trust proxy', true)
+const libraryConfigFromIp = ip => {
+	if (!all_ip_set.has(ip)) {
+		return {
+			failureMessage: `Could not find your ip (${ip}) in permitIpAddresses for any location`
+		}
+	}
+	else {
+		return config.locations.find(location => location.permitIpAddresses.includes(ip))
+	}
+}
 // 
 // Routes
 // 
-app.use(express.static('client'))
+app.use(express.static('client/build'))
 app.get('/users/:userId', (req, res) => {
 	console.log("user id scan");
 	getUser(req.params, res);
 })
-app.post('/users/:userId/loans?', jsonParser, (req, res) => {
+app.get('/users/:userId/loans?', jsonParser, (req, res) => {
 	console.log(req.query.item_barcode)
 	console.log(req.body)
-	requestLoan(req.params, req.query, req.body, res)
+	const ipAddress = req.ip.split(":").pop()
+	requestLoan(req.params, req.query, ipAddress, req.body, res)
 })
-app.get('/isCovidSafe', (req, res) => {
-	res.json({
-		"covidSafe": config.covidSafe
+app.get('/whoami', (req, res) => {
+	const ipAddress = req.ip.split(":").pop()
+	const conf = libraryConfigFromIp(ipAddress)
+	if ("failureMessage" in conf) {
+		return res.json({
+			error: "Sorry, we could not find a circulation desk for your ip address.",
+			message: conf.failureMessage
+		})
+	}
+	// Pass the config details we intend to pass back (not just everything in that object)
+	const {
+		libraryLogoUrl: libraryLogo,
+		featureImageUrl: featureImage,
+		libraryNameString: libraryName,
+		organizationNameString: organizationName } = conf
+	if (!libraryName || !organizationName) {
+		return res.json({
+			error: "Sorry, your circulation desk is missing configuration details"
+		})
+	}
+	return res.json({
+		libraryLogo,
+		featureImage,
+		libraryName,
+		organizationName
 	})
 })
 app.listen(port, () => console.log(`Selfcheck has started listening at ${port}`))
@@ -39,33 +90,30 @@ app.listen(port, () => console.log(`Selfcheck has started listening at ${port}`)
 async function getUser(params, res) {
 	console.log(`Retrieving user with id ${params.userId}.`)
 
-	let u = await get_api_user(params.userId)
-
-	if (u) {
-		res.json(u)
-	} else {
-		res.json({ error: 'something went wrong with the lookup' })
+	let user = await get_api_user(params.userId)
+	if (!user) {
+		return res.json({ error: 'something went wrong with the lookup' })
 	}
+	res.json(user)
 }
 
-async function requestLoan(params, query, body, res) {
+async function requestLoan(params, query, ip, body, res) {
 	console.log(`Loan processing started ${JSON.stringify(params)} and ${JSON.stringify(query)} and ${JSON.stringify(body)}`)
 
-	let loan = await api_request_loan(params.userId, query.item_barcode)
+	let loan = await api_request_loan(params.userId, ip, query.item_barcode)
 	console.log(loan)
 
 	if (loan.error) {
 		console.log("API returned with error")
-		res.json({ error: loan.error[0].errorMessage })
+		return res.json({ error: loan.error[0].errorMessage })
 	} else if (loan) {
 		console.log("successfully loaned book to user")
 		console.log(loan)
-		res.json(loan)
+		return res.json(loan)
 	} else {
 		console.log("No error from API but something else went wrong")
-		res.json({ error: 'something went wrong with the lookup' })
+		return res.json({ error: 'something went wrong with the lookup' })
 	}
-
 }
 // 
 // API calls
@@ -96,8 +144,20 @@ function get_api_user(id) {
 	return getData(options)
 }
 
-function api_request_loan(userid, barcode) {
-	let library_xml = `<?xml version='1.0' encoding='UTF-8'?><item_loan><circ_desk>${config.circDesk}</circ_desk><library>${config.libraryName}</library></item_loan>`
+function api_request_loan(userid, ip, barcode) {
+	const { apiCircDesk, apiLibraryName, failureMessage } = libraryConfigFromIp(ip)
+	if (failureMessage) {
+		// api_request_loan should return a promise so this is a promise that resolves to an error
+		return new Promise((resolve, reject) => {
+			resolve({
+				error: [{
+					message: "Sorry, we could not find a circulation desk for your ip address."
+				}],
+			})
+		})
+	}
+
+	const library_xml = `<?xml version='1.0' encoding='UTF-8'?><item_loan><circ_desk>${apiCircDesk}</circ_desk><library>${apiLibraryName}</library></item_loan>`
 	const options = {
 		baseURL: config.hostname,
 		port: 443,
