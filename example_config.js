@@ -9,7 +9,7 @@ module.exports = {
         "organizationNameString": "Friendly Organization Name",
         "apiLibraryName": "XXXXX",
         "apiCircDesk": "XXXXXXXXXXXXXXXX",
-        "permitIpAddresses": ['127.0.0.1'],
+        "permitIpAddresses": ["127.0.0.1"],
     }, {
         "libraryLogoUrl": "url/to/image.jpg",
         "featureImageUrl": "url/to/image.jpg",
@@ -17,6 +17,6 @@ module.exports = {
         "organizationNameString": "Friendly Organization Name",
         "apiLibraryName": "XXXXX",
         "apiCircDesk": "XXXXXXXXXXXXXXXX",
-        "permitIpAddresses": ['127.0.0.2'],
+        "permitIpAddresses": ["127.0.0.2"],
     }]
 }
