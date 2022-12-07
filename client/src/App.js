@@ -41,6 +41,7 @@ class App extends Component {
 		}, LOGGED_OUT_STATE)
 	}
 	async doLogin(userBarcode) {
+		this.setState({showLoginAlert: true, loginAlertMessage: "Finding user."})
 		const newUser = await login({ userBarcode })
 		if ("failureMessage" in newUser) {
 			this.setState({ loginAlertMessage: newUser.failureMessage, showLoginAlert: true })
@@ -61,6 +62,7 @@ class App extends Component {
 		}
 	}
 	doLogout() {
+		this.setState({showLoginAlert: true, loginAlertMessage: "Ending session."})
 		this.setState(Object.assign({}, LOGGED_OUT_STATE))
 	}
 	async doCheckoutBook(bookBarcode) {
@@ -68,6 +70,7 @@ class App extends Component {
 		if (bookBarcode === this.userBarcode) {
 			return this.doLogout()
 		}
+		this.setState({showCheckoutAlert: true, checkoutAlertMessage: "Checking out item." })
 
 		const checkedOutBarcodes = this.state.booksCheckedOut.map(b => b.barcode)
 		if (checkedOutBarcodes.includes(bookBarcode)) {
