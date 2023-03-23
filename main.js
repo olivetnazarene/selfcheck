@@ -4,6 +4,7 @@
 const express = require('express')
 const axios = require('axios')
 const bodyParser = require('body-parser')
+const fs = require('fs');
 
 // 
 // Setup server values
@@ -50,7 +51,9 @@ const libraryConfigFromIp = ip => {
 app.use(express.static('client/build'))
 app.get('/users/:userId', (req, res) => {
 	console.log("user id scan");
+	log_session();
 	getUser(req.params, res);
+
 })
 app.get('/users/:userId/loans?', jsonParser, (req, res) => {
 	console.log(req.query.item_barcode)
@@ -194,4 +197,15 @@ function api_request_loan(userid, ip, barcode) {
 	}
 
 	return getData(options)
+}
+
+function log_session(){
+	var date = new Date()
+	var day = date.toISOString().slice(0,10) 
+	var time = date.toLocaleString()
+	var line = "User logged in at " + time + "\n"
+	var filename = "log/access_"+day+".log"
+	var stream = fs.createWriteStream(filename, {flags:'a'});
+	stream.write(line);
+	stream.end();
 }
