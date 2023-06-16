@@ -1,11 +1,12 @@
 require('dotenv').config()
+const { readFileSync } = require('fs');
 const https = require('https');
 const app = require('./main');
 
 if (process.env.NODE_ENV == 'production') {
     const options = {
-        cert: process.env.SSL_CERT,
-        key: process.env.SSL_KEY
+        cert: readFileSync(process.env.SSL_CERT),
+        key: readFileSync(process.env.SSL_KEY)
     }
     
     https.createServer(options, app).listen(process.env.NODE_PORT || 3000, () => {
