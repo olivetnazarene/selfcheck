@@ -11,7 +11,6 @@ const fs = require('fs');
 // 
 const app = express()
 const jsonParser = bodyParser.json()
-const port = process.env.NODE_PORT || 3000;
 // 
 // Setup API settings
 // 
@@ -88,7 +87,6 @@ app.get('/whoami', (req, res) => {
 		organizationName
 	})
 })
-app.listen(port, () => console.log(`Selfcheck has started listening at ${port}`))
 
 async function getUser(params, res) {
 	console.log(`Retrieving user with id ${params.userId}.`)
@@ -209,3 +207,5 @@ function log_session(){
 	stream.write(line);
 	stream.end();
 }
+
+module.exports = app;
