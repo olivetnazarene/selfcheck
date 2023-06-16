@@ -2,3 +2,4 @@ node_modules
 .vscode
 *.code-workspace
 config.js
+.env
