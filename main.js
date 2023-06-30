@@ -200,7 +200,7 @@ function api_request_loan(userid, ip, barcode) {
 function log_session(){
 	var date = new Date()
 	var day = date.toISOString().slice(0,10) 
-	var time = date.toLocaleString()
+	var time = date.toISOString().slice(0,20)
 	var line = "["+time+"] User logged in\n"
 	var filename = "log/access_"+day+".log"
 	var stream = fs.createWriteStream(filename, {flags:'a'});
