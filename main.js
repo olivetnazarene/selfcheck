@@ -201,7 +201,7 @@ function log_session(){
 	var date = new Date()
 	var day = date.toISOString().slice(0,10) 
 	var time = date.toLocaleString()
-	var line = "User logged in at " + time + "\n"
+	var line = "["+time+"] User logged in\n"
 	var filename = "log/access_"+day+".log"
 	var stream = fs.createWriteStream(filename, {flags:'a'});
 	stream.write(line);
