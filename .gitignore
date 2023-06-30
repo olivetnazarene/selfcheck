@@ -1,7 +1,7 @@
-node_modules
-.vscode
 *.code-workspace
 *.swp
-config.js
 .env
+.vscode
+config.js
+node_modules
 package-lock.json
