@@ -95,6 +95,8 @@ async function getUser(params, res) {
 	if (!user) {
 		return res.json({ error: 'something went wrong with the lookup' })
 	}
+	//console.log(user);
+	log_session(params.userId+"/"+user.primary_id+"/"+user.full_name);
 	res.json(user)
 }
 
