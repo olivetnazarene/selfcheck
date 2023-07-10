@@ -7,6 +7,8 @@ module.exports = {
     extend: {
       colors: {
         gray: colors.blueGray,
+        'olivet': '#48206E',
+        'benner': '#54406b'
       },
     },
   },
