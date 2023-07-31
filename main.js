@@ -35,13 +35,12 @@ let all_ip_set
 
 app.set('trust proxy', true)
 const libraryConfigFromIp = ip => {
-   if (!all_ip_set.has(ip)) {
-      return {
-         failureMessage: `Could not find your ip (${ip}) in permitIpAddresses for any location`
-      }
-   }
-   else {
+   if (config.locations.find(location => location.permitIpAddresses.includes(ip))!=null) {
       return config.locations.find(location => location.permitIpAddresses.includes(ip))
+   } else if (config.locations.find(location => location.permitIpAddresses.includes(ip.replace(/\.[0-9]+$/,".0/24")))!=null) {
+      return config.locations.find(location => location.permitIpAddresses.includes(ip.replace(/\.[0-9]+$/,".0/24")))
+   } else {
+      return { failureMessage: `Could not find your ip (${ip}) in permitIpAddresses for any location` }
    }
 }
 // 
