@@ -85,7 +85,7 @@ const CheckoutLayout = ({ libraryLogo, library, organization, userName, userLoan
 		{/* <!-- Logout progress bar --> */}
 		<div class={"fixed w-full bottom-0" + (libraryLogo ? " bg-white" : "")}>
 			{libraryLogo && (
-				<div class="w-full bg-white flex flex-row justify-center pt-2">
+				<div class="w-full bg-benner flex flex-row justify-center pt-2">
 					<img src={libraryLogo} class="h-24 z-0" alt={`${library} at ${organization} logo`} />
 				</div>
 			)}

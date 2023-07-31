@@ -19,7 +19,7 @@ async function checkout({ bookBarcode, userId }) {
                 console.log("Loan Error")
                 console.log(book)
                 return {
-                    failureMessage: book.error + ". Please see the circulation desk for more information."
+                    failureMessage: book.error + ". Please see library staff for assistance."
                 }
             }
             else {
@@ -36,7 +36,7 @@ async function checkout({ bookBarcode, userId }) {
             console.error("Failed to loan book")
             console.error(error)
             return {
-                failureMessage: "Could not checkout book. Please try again or ask for help at the circulation desk."
+                failureMessage: "Could not checkout book. Please try again or see library staff for assistance."
             }
         }
     }

@@ -31,7 +31,7 @@ async function login({ userBarcode }) {
 			console.error("Failed to login")
 			console.error(error)
 			return {
-				failureMessage: "Could not log in. Please try again or ask for help at the circulation desk."
+				failureMessage: "Could not log in. Please try again or see library staff for assistance."
 			}
 		}
 	}
