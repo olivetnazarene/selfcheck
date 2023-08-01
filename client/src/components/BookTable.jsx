@@ -15,7 +15,7 @@ const BookTable = ({ books, rowLimit }) => {
             <tbody class="text-xl">
                 {bookList.map(b =>
                     <tr key={b.barcode} class="border-b border-gray-400">
-                        <td class="p-2 text-gray-500 text-xs">{b.dueDate}</td>
+                        <td class="p-2">{b.dueDate}</td>
                         <td class="p-2 truncate" style={{ maxWidth: "50vw" }}>{b.bookString}</td>
                     </tr>
                 )}
