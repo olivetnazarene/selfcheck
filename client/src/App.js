@@ -11,7 +11,7 @@ import login from "./api/login"
 import checkout from "./api/checkout"
 
 const LOGIN_ALERT_TIMEOUT_SECONDS = 10
-const CHECKOUT_ALERT_TIMEOUT_SECONDS = 2
+const CHECKOUT_ALERT_TIMEOUT_SECONDS = 10
 const LOGOUT_TIME_LIMIT = 60
 
 const LOGGED_OUT_STATE = {
