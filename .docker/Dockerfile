@@ -7,7 +7,7 @@ COPY package-lock.json* ./
 RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 
 # ---- client build ----
-FROM node:20-alpine AS client_build
+FROM node:16-alpine AS client_build
 WORKDIR /app/client
 
 COPY client/package.json ./
